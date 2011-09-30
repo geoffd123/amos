@@ -3,7 +3,7 @@ module Amos
 
     unloadable
 
-    def all
+    def index
       @model = params[:model].camelize
       records = self.instance_eval("#{@model}.all")
       result_records = []
@@ -15,7 +15,7 @@ module Amos
       render :json => result_records 
     end
 
-    def get_with_id
+    def show
       @model = params[:model].camelize
       record = self.instance_eval("#{@model}.find(#{params[:id]})")
       
@@ -25,7 +25,7 @@ module Amos
       render :json => result
      end
      
-   def delete_with_id
+   def destroy
      @model = params[:model].camelize
      
      begin
@@ -35,6 +35,22 @@ module Amos
      rescue Exception => e
        render :json => {:success => "false"}
      end
+    end
+    
+    def update
+      @model = params[:model].camelize
+      record = self.instance_eval("#{@model}.find(#{params[:id]})")
+      attributes = Hash.new 
+      params.each_pair{|p, v| attributes[p] = v}
+      attributes.delete('id')
+      attributes.delete('model')
+      attributes.delete('controller')
+      attributes.delete('action')     
+      if record.update_attributes(attributes)
+        render :json => {:success => "true"}
+      else
+        render :json => {:success => "false"}
+      end
     end
 
   protected

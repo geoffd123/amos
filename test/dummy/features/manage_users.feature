@@ -21,7 +21,22 @@ Scenario: List a single user
     When the client requests GET /user/1
     Then the response should be JSON:
 	"""
-	{"name": "J Smith", "email": "smith@smith.com", "id": 1}
+	{"name" : "J Smith", "email": "smith@smith.com", "id": 1}
+	"""
+
+Scenario: Successfully update a single user
+    When the client requests PUT /user/1 with name "A Smith" and email "only@smith.com"
+    Then the response should be JSON:
+	"""
+	{"success": "true"}
+	"""
+    And the client requests GET /user
+    Then the response should be JSON:
+	"""
+	[
+	{"name": "A Smith", "email": "only@smith.com", "id": 1},
+	{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
+	]
 	"""
 
 Scenario: Successfully delete a single user
