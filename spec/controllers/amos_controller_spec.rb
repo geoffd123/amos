@@ -26,9 +26,7 @@ describe Amos::AmosController do
       get :all, :model => 'user'
       ActiveSupport::JSON.decode(response.body).should == 
       ActiveSupport::JSON.decode([
-        {"user"=>
-          {"name" => "J Smith", "created_at"=>nil, "updated_at"=>nil, "email"=>"smith@smith.com"}
-        }
+          {"name" => "J Smith", "email"=>"smith@smith.com"}
       ].to_json)
     end
   end
@@ -54,9 +52,7 @@ describe Amos::AmosController do
       get :with_id, :model => 'user', :id => '1'
       ActiveSupport::JSON.decode(response.body).should == 
       ActiveSupport::JSON.decode(
-        {"user"=>
-          {"name"=>"J Smith", "created_at"=>nil, "updated_at"=>nil, "email"=>"smith@smith.com"}
-        }.to_json)
+          {"name"=>"J Smith", "email"=>"smith@smith.com"}.to_json)
     end
   end
   
