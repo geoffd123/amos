@@ -1,10 +1,9 @@
 module Amos
   class AmosController < ApplicationController
     unloadable
-    def access
+    def all
       @model = params[:model].camelize
-      method = params[:method]
-      render :json =>  self.instance_eval("#{@model}.#{method}")
+      render :json =>  self.instance_eval("#{@model}.all")
     end
   end
 end

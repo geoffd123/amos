@@ -5,18 +5,18 @@ describe Amos::AmosController do
   let(:user) {User.new(:email => 'smith@smith.com', :name => 'J Smith')}
 
   it "selects the correct model" do
-    get :access, :model => 'user', :method => 'all'
+    get :all, :model => 'user'
     assigns[:model].should == 'User'
   end
 
   it "calls the correct method" do
     User.should_receive('all').with(){[user]}
-    get :access, :model => 'user', :method => 'all'
+    get :all, :model => 'user'
   end
   
   it "returns the correct json data" do
     User.should_receive('all'){[user]}
-    get :access, :model => 'user', :method => 'all'
+    get :all, :model => 'user'
     ActiveSupport::JSON.decode(response.body).should == 
     ActiveSupport::JSON.decode([
       {"user"=>

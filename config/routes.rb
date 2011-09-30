@@ -1,3 +1,3 @@
  Rails.application.routes.draw do
-   match '/access/:model/:method' => 'amos/amos#access'
+   match 'all/:model' => 'amos/amos#all'
 end
