@@ -27,7 +27,7 @@ describe Amos::AmosController do
       ActiveSupport::JSON.decode(response.body).should == 
       ActiveSupport::JSON.decode([
         {"user"=>
-          {"name"=>"J Smith", "created_at"=>nil, "updated_at"=>nil, "email"=>"smith@smith.com"}
+          {"name" => "J Smith", "created_at"=>nil, "updated_at"=>nil, "email"=>"smith@smith.com"}
         }
       ].to_json)
     end

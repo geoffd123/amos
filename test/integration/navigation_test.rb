@@ -1,7 +1,15 @@
 require 'test_helper'
 
+
 class NavigationTest < ActiveSupport::IntegrationCase
-  test "truth" do
-    assert_kind_of Dummy::Application, Rails.application
+  test 'Accessing /users returns a list of users' do
+    visit user_path
+    assert_equal 'javascript/json', headers['Content-Type']
+  end
+    
+protected
+
+  def headers
+    page.response_headers
   end
 end
