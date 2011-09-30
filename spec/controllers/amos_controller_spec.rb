@@ -5,12 +5,31 @@ describe Amos::AmosController do
 
   let(:user) {User.new(:email => 'smith@smith.com', :name => 'J Smith')}
 
-  describe 'GET /user' do
+  describe "routes" do
+    it "routes /user to the index action" do
+      { :get => "/user" }.
+        should route_to(:controller => "amos/amos", :action => "index", :model => 'user')
+    end
 
-    it "should route to amos controller#all" do
-      assert_recognizes({ :controller => "amos/amos", :action => "index", :model => 'user'}, "/user")
+    it "routes show /user/1 to the show action" do
+      { :get => "/user/1" }.
+        should route_to(:controller => "amos/amos", :action => "show", :model => 'user', :id => '1')
+    end
+
+    it "routes delete /user/1 to the destroy action" do
+      { :delete => "/user/1" }.
+        should route_to(:controller => "amos/amos", :action => "destroy", :model => 'user', :id => '1')
     end
     
+    it "routes put /user/1 to the destroy action" do
+      { :put => "/user/1" }.
+        should route_to(:controller => "amos/amos", :action => "update", :model => 'user', :id => '1')
+    end
+
+  end
+  
+  describe 'GET /user' do
+
     context 'successful operation' do
       before(:each) do
         User.should_receive('all'){[user]}
@@ -36,10 +55,6 @@ describe Amos::AmosController do
   end
   
   describe 'GET /user/:id' do
-    it "should route to amos controller#with_id" do
-      assert_recognizes({ :controller => "amos/amos", :action => "show", :model => 'user', :id => '1'}, "/user/1")
-    end
-
     context 'successful operation' do
       before(:each) do
         User.should_receive('find').with(1){user}
@@ -64,10 +79,7 @@ describe Amos::AmosController do
   end
   
   describe 'DELETE /user/:id' do
-    it "should route to amos controller#with_id" do
-      assert_recognizes({ :controller => "amos/amos", :action => "destroy", :model => 'user', :id => '1'}, {:path => 'user/1', :method => :delete})
-    end
-
+    
     context 'successful operation' do
       before(:each) do
         User.should_receive('find').with(1){user}
@@ -105,10 +117,6 @@ describe Amos::AmosController do
   end
 
   describe 'PUT /user/:id' do
-    it "should route to amos controller#with_id" do
-      assert_recognizes({ :controller => "amos/amos", :action => "update", :model => 'user', :id => '1'}, {:path => 'user/1', :method => :put})
-    end
-
     context 'successful operation' do
       before(:each) do
         User.should_receive('find').with(1){user}
