@@ -3,9 +3,8 @@ module Amos
     unloadable
     def access
       @model = params[:model].camelize
-      @method = params[:method]
-      @result = eval "#{@model}.#{@method}"
-      render :json =>  @result
+      method = params[:method]
+      render :json =>  self.instance_eval("#{@model}.#{method}")
     end
   end
 end
