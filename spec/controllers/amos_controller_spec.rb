@@ -7,6 +7,10 @@ describe Amos::AmosController do
 
   describe '/user' do
 
+    it "should route to amos controller#all" do
+      assert_recognizes({ :controller => "amos/amos", :action => "all", :model => 'user'}, "/user")
+    end
+    
     it "selects the correct model" do
       get :all, :model => 'user'
       assigns[:model].should == 'User'
@@ -30,6 +34,10 @@ describe Amos::AmosController do
   end
   
   describe '/user/:id' do
+    it "should route to amos controller#with_id" do
+      assert_recognizes({ :controller => "amos/amos", :action => "with_id", :model => 'user', :id => '1'}, "/user/1")
+    end
+
     it "selects the correct model" do
       User.should_receive('find').with(1){user}
       get :with_id, :model => 'user', :id => '1'
