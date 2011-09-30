@@ -15,7 +15,7 @@ module Amos
       render :json => result_records 
     end
 
-    def with_id
+    def get_with_id
       @model = params[:model].camelize
       record = self.instance_eval("#{@model}.find(#{params[:id]})")
       
@@ -25,6 +25,18 @@ module Amos
       render :json => result
      end
      
+   def delete_with_id
+     @model = params[:model].camelize
+     
+     begin
+       record = self.instance_eval("#{@model}.find(#{params[:id]})")
+       record.destroy
+       render :json => {:success => "true"}
+     rescue Exception => e
+       render :json => {:success => "false"}
+     end
+    end
+
   protected
   
     def filter_record result, record
