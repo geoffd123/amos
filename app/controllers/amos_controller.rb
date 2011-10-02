@@ -1,4 +1,4 @@
-module Amos
+
   class AmosController < ApplicationController
 
     unloadable
@@ -34,11 +34,12 @@ module Amos
     def create
       p = remove_attributes_from ['id', 'model', 'controller', 'action'], params.clone 
       record = self.instance_eval("#{@model}.new(p)")
-      
-      if record.save 
-          render :json => {:success => "true"}
+     
+      if record.save
+          result = filter_record record
+          render :json => result
         else
-          render :json => {:success => "false"}
+          render :json => record.errors
         end
     end
     
@@ -72,4 +73,4 @@ module Amos
       collection
     end
   end
-end
+

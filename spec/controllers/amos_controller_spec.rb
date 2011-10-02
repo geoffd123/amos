@@ -1,34 +1,34 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../test/spec_helper')
 
 
-describe Amos::AmosController do
+describe AmosController do
 
   let(:user) {User.new(:name => 'J Smith', :email => 'smith@smith.com')}
 
   describe "routes" do
     it "routes /user to the index action" do
       { :get => "/user" }.
-        should route_to(:controller => "amos/amos", :action => "index", :model => 'user')
+        should route_to(:controller => "amos", :action => "index", :model => 'user')
     end
 
     it "routes show /user/1 to the show action" do
       { :get => "/users/1" }.
-        should route_to(:controller => "amos/amos", :action => "show", :model => 'users', :id => '1')
+        should route_to(:controller => "amos", :action => "show", :model => 'users', :id => '1')
     end
 
     it "routes delete /user/1 to the destroy action" do
       { :delete => "/users/1" }.
-        should route_to(:controller => "amos/amos", :action => "destroy", :model => 'users', :id => '1')
+        should route_to(:controller => "amos", :action => "destroy", :model => 'users', :id => '1')
     end
     
     it "routes put /user/1 to the update action" do
       { :put => "/users/1" }.
-        should route_to(:controller => "amos/amos", :action => "update", :model => 'users', :id => '1')
+        should route_to(:controller => "amos", :action => "update", :model => 'users', :id => '1')
     end
 
     it "routes post /user to the create action" do
       { :post => "/users" }.
-        should route_to(:controller => "amos/amos", :action => "create", :model => 'users')
+        should route_to(:controller => "amos", :action => "create", :model => 'users')
     end
 
   end
@@ -161,11 +161,10 @@ describe Amos::AmosController do
   
   describe 'POST /user' do
     
-    let(:auser) { mock_model(User).as_null_object }
-    
     context 'successful operation' do
       before(:each) do
-        User.stub(:new).and_return(auser)
+        @auser = User.new(:name => 'J Smith', :email => 'smith@smith.com')
+        User.stub(:new){@auser}
         user.should_receive('save'){true}
       end
       
@@ -175,7 +174,7 @@ describe Amos::AmosController do
       end
 
       it "calls the correct method" do
-        User.should_receive(:new).with("name" => "J Smith", 'email' => 'smith@smith.com' ).and_return(auser)
+        User.should_receive(:new).with("name" => "J Smith", 'email' => 'smith@smith.com' ).and_return(user)
         post :create, :model => 'users', :name => 'J Smith', :email => 'smith@smith.com'
       end
 
@@ -183,20 +182,16 @@ describe Amos::AmosController do
         post :create, :model => 'users', :name => 'J Smith', :email => 'smith@smith.com'
         ActiveSupport::JSON.decode(response.body).should == 
         ActiveSupport::JSON.decode(
-            {"success"=>"true"}.to_json)
+            {"name"=>"J Smith", "email"=>"smith@smith.com"}.to_json)
       end
     end
     
     context 'failed operation' do
-      before(:each) do
-        User.stub(:new).and_return(auser)
-        user.should_receive('save'){false}
-     end
       it "returns a fail response" do
-        post :create, :model => 'users', :name => 'J Smith', :email => 'smith@smith.com'
+        post :create, :model => 'users', :name => 'J Smith'
         ActiveSupport::JSON.decode(response.body).should == 
         ActiveSupport::JSON.decode(
-            {"success"=>"false"}.to_json)
+            {"email"=>["can't be blank"]}.to_json)
       end
     end
   end

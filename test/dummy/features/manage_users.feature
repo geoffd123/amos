@@ -42,7 +42,7 @@ Scenario: Successfully create a new user
     When the client requests POST /users with name "E Bygumm" and email "eric@bygumm.com"
     Then the response should be JSON:
 	"""
-	{"success": "true"}
+	{"name":"E Bygumm", "id":3, "email":"eric@bygumm.com"}
 	"""
     And the client requests GET /user
     Then the response should be JSON:
