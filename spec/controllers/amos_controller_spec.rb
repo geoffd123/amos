@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../test/spec_helper')
 
 describe Amos::AmosController do
 
-  let(:user) {User.new(:email => 'smith@smith.com', :name => 'J Smith')}
+  let(:user) {User.new(:name => 'J Smith', :email => 'smith@smith.com')}
 
   describe "routes" do
     it "routes /user to the index action" do
@@ -26,9 +26,9 @@ describe Amos::AmosController do
         should route_to(:controller => "amos/amos", :action => "update", :model => 'users', :id => '1')
     end
 
-    it "routes put /user/1 to the create action" do
-      { :post => "/users/1" }.
-        should route_to(:controller => "amos/amos", :action => "create", :model => 'users', :id => '1')
+    it "routes post /user to the create action" do
+      { :post => "/users" }.
+        should route_to(:controller => "amos/amos", :action => "create", :model => 'users')
     end
 
   end
@@ -110,7 +110,7 @@ describe Amos::AmosController do
 
     context 'failed operation' do
       before(:each) do
-        User.should_receive('find').with(1){ActiveRecord::RecordNotFound.new}
+        User.should_receive('find').with(1).and_raise(ActiveRecord::RecordNotFound)
        end
       it "returns a fail response" do
          delete :destroy, :model => 'users', :id => '1'
@@ -152,6 +152,48 @@ describe Amos::AmosController do
       end
       it "returns a fail response" do
         put :update, :model => 'users', :id => '1', :name => 'fred', :email => 'smith'
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode(
+            {"success"=>"false"}.to_json)
+      end
+    end
+  end
+  
+  describe 'POST /user' do
+    
+    let(:auser) { mock_model(User).as_null_object }
+    
+    context 'successful operation' do
+      before(:each) do
+        User.stub(:new).and_return(auser)
+        user.should_receive('save'){true}
+      end
+      
+      it "selects the correct model" do
+        post :create, :model => 'users', :name => 'J Smith', :email => 'smith@smith.com'
+        assigns[:model].should == 'User'
+      end
+
+      it "calls the correct method" do
+        User.should_receive(:new).with("name" => "J Smith", 'email' => 'smith@smith.com' ).and_return(auser)
+        post :create, :model => 'users', :name => 'J Smith', :email => 'smith@smith.com'
+      end
+
+      it "returns a success response" do
+        post :create, :model => 'users', :name => 'J Smith', :email => 'smith@smith.com'
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode(
+            {"success"=>"true"}.to_json)
+      end
+    end
+    
+    context 'failed operation' do
+      before(:each) do
+        User.stub(:new).and_return(auser)
+        user.should_receive('save'){false}
+     end
+      it "returns a fail response" do
+        post :create, :model => 'users', :name => 'J Smith', :email => 'smith@smith.com'
         ActiveSupport::JSON.decode(response.body).should == 
         ActiveSupport::JSON.decode(
             {"success"=>"false"}.to_json)

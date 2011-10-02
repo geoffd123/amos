@@ -4,7 +4,7 @@ module Amos
     unloadable
 
     before_filter :set_model
-    before_filter :set_current_record, :except => [:index]
+    before_filter :set_current_record, :only => [:show, :update]
     
     def index
       records = self.instance_eval("#{@model}.all")
@@ -23,11 +23,23 @@ module Amos
      
    def destroy
      begin
+       set_current_record
        @record.destroy
        render :json => {:success => "true"}
-     rescue Exception => e
+     rescue ActiveRecord::RecordNotFound => e
        render :json => {:success => "false"}
      end
+    end
+    
+    def create
+      p = remove_attributes_from ['id', 'model', 'controller', 'action'], params.clone 
+      record = self.instance_eval("#{@model}.new(p)")
+      
+      if record.save 
+          render :json => {:success => "true"}
+        else
+          render :json => {:success => "false"}
+        end
     end
     
     def update
@@ -49,7 +61,7 @@ module Amos
   
     def set_current_record
         @record = self.instance_eval("#{@model}.find(#{params[:id]})")
-    end
+     end
     
     def filter_record record
       remove_attributes_from ['created_at', 'updated_at'], record.attributes.clone 

@@ -6,6 +6,10 @@ When /^the client requests DELETE (.*)$/ do |path|
   delete(path)
 end
 
+When /^the client requests POST (.*) with name "([^"]*)" and email "([^"]*)"$/ do |path, name, email|
+  post(path, :name => name, :email => email)
+end
+
 When /^the client requests PUT (.*) with name "([^"]*)" and email "([^"]*)"$/ do |path, name, email|
   put(path, :name => name, :email => email)
 end

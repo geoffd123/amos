@@ -18,14 +18,14 @@ Scenario: List users
 	]
 	"""
 Scenario: List a single user
-    When the client requests GET /user/1
+    When the client requests GET /users/1
     Then the response should be JSON:
 	"""
 	{"name" : "J Smith", "email": "smith@smith.com", "id": 1}
 	"""
 
 Scenario: Successfully update a single user
-    When the client requests PUT /user/1 with name "A Smith" and email "only@smith.com"
+    When the client requests PUT /users/1 with name "A Smith" and email "only@smith.com"
     Then the response should be JSON:
 	"""
 	{"success": "true"}
@@ -38,9 +38,24 @@ Scenario: Successfully update a single user
 	{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
 	]
 	"""
+Scenario: Successfully create a new user
+    When the client requests POST /users with name "E Bygumm" and email "eric@bygumm.com"
+    Then the response should be JSON:
+	"""
+	{"success": "true"}
+	"""
+    And the client requests GET /user
+    Then the response should be JSON:
+	"""
+	[
+	{"name": "J Smith", "email": "smith@smith.com", "id": 1},
+	{"name": "B Bloggs", "email": "b@bloggs.com",    "id": 2},
+	{"name": "E Bygumm", "email": "eric@bygumm.com", "id": 3}
+	]
+	"""
 
 Scenario: Successfully delete a single user
-    When the client requests DELETE /user/1
+    When the client requests DELETE /users/1
     Then the response should be JSON:
 	"""
 	{"success": "true"}
@@ -54,7 +69,7 @@ Scenario: Successfully delete a single user
 	"""
 
 Scenario: Fails to delete a single user
-    When the client requests DELETE /user/1000000
+    When the client requests DELETE /users/1000000
     Then the response should be JSON:
 	"""
 	{"success": "false"}
