@@ -1,3 +1,24 @@
-= Amos
+= Amos - A Model Only Server.
 
-This project rocks and uses MIT-LICENSE.
+AMOS is a rails plugin that provides a simple server that uses the url to decide which model to deliver.  It is intended for 
+front-end applications that use something like javascriptMVC.
+
+E.g. If the incoming request is /recipe it executes the index action which does a find(:all) in the Recipe modes.
+
+== Supported actions
+
+  :get => "/user" returns array of all users
+  :get => "/users/1" returns record for user 1
+  :delete => "/users/1" deletes record 1 from users, returns success => true / false
+  :put => "/users/1" + form data. Updates user record 1.  Returns success => true / false
+  :post => "/users" + form data.  Returns details of new record on success, or errors array on failure
+
+*Currently only available via github*. I will be releasing the amos gem once I have done some more testing
+
+Distributed under the MIT License, all rights reserved 2011 Geoff Drake
+
+== Thing to to
+* Publish as a gem
+* Add installation instructions
+* Add security
+* More tests against a javascriptMVC application
