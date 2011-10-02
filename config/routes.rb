@@ -3,5 +3,6 @@
    match ":model/:id" => "amos/amos#show", :constraints => { :model => /.*/ }, :via => :get
    match ":model/:id" => "amos/amos#destroy", :constraints => { :model => /.*/ }, :via => :delete
    match ":model/:id" => "amos/amos#update", :constraints => { :model => /.*/ }, :via => :put
+   match ":model/:id" => "amos/amos#create", :constraints => { :model => /.*/ }, :via => :post
    match ":model" => "amos/amos#index", :constraints => { :model => /.*/ }
 end

@@ -12,18 +12,23 @@ describe Amos::AmosController do
     end
 
     it "routes show /user/1 to the show action" do
-      { :get => "/user/1" }.
-        should route_to(:controller => "amos/amos", :action => "show", :model => 'user', :id => '1')
+      { :get => "/users/1" }.
+        should route_to(:controller => "amos/amos", :action => "show", :model => 'users', :id => '1')
     end
 
     it "routes delete /user/1 to the destroy action" do
-      { :delete => "/user/1" }.
-        should route_to(:controller => "amos/amos", :action => "destroy", :model => 'user', :id => '1')
+      { :delete => "/users/1" }.
+        should route_to(:controller => "amos/amos", :action => "destroy", :model => 'users', :id => '1')
     end
     
-    it "routes put /user/1 to the destroy action" do
-      { :put => "/user/1" }.
-        should route_to(:controller => "amos/amos", :action => "update", :model => 'user', :id => '1')
+    it "routes put /user/1 to the update action" do
+      { :put => "/users/1" }.
+        should route_to(:controller => "amos/amos", :action => "update", :model => 'users', :id => '1')
+    end
+
+    it "routes put /user/1 to the create action" do
+      { :post => "/users/1" }.
+        should route_to(:controller => "amos/amos", :action => "create", :model => 'users', :id => '1')
     end
 
   end
@@ -61,16 +66,16 @@ describe Amos::AmosController do
       end
 
       it "selects the correct model" do
-        get :show, :model => 'user', :id => '1'
+        get :show, :model => 'users', :id => '1'
         assigns[:model].should == 'User'
       end
 
       it "calls the correct method" do
-        get :show, :model => 'user', :id => '1'
+        get :show, :model => 'users', :id => '1'
       end
 
       it "returns the correct json data" do
-        get :show, :model => 'user', :id => '1'
+        get :show, :model => 'users', :id => '1'
         ActiveSupport::JSON.decode(response.body).should == 
         ActiveSupport::JSON.decode(
             {"name"=>"J Smith", "email"=>"smith@smith.com"}.to_json)
@@ -87,16 +92,16 @@ describe Amos::AmosController do
       end
 
       it "selects the correct model" do
-        delete :destroy, :model => 'user', :id => '1'
+        delete :destroy, :model => 'users', :id => '1'
         assigns[:model].should == 'User'
       end
 
       it "calls the correct method" do
-        delete :destroy, :model => 'user', :id => '1'
+        delete :destroy, :model => 'users', :id => '1'
       end
 
       it "returns a success response" do
-        delete :destroy, :model => 'user', :id => '1'
+        delete :destroy, :model => 'users', :id => '1'
         ActiveSupport::JSON.decode(response.body).should == 
         ActiveSupport::JSON.decode(
             {"success"=>"true"}.to_json)
@@ -108,7 +113,7 @@ describe Amos::AmosController do
         User.should_receive('find').with(1){RecordNotFound.new}
        end
       it "returns a fail response" do
-         delete :destroy, :model => 'user', :id => '1'
+         delete :destroy, :model => 'users', :id => '1'
         ActiveSupport::JSON.decode(response.body).should == 
         ActiveSupport::JSON.decode(
             {"success"=>"false"}.to_json)
@@ -124,16 +129,16 @@ describe Amos::AmosController do
       end
       
       it "selects the correct model" do
-        put :update, :model => 'user', :id => '1', :name => 'fred', :email => 'smith'
+        put :update, :model => 'users', :id => '1', :name => 'fred', :email => 'smith'
         assigns[:model].should == 'User'
       end
 
       it "calls the correct method" do
-        put :update, :model => 'user', :id => '1', :name => 'fred', :email => 'smith'
+        put :update, :model => 'users', :id => '1', :name => 'fred', :email => 'smith'
       end
 
       it "returns a success response" do
-        put :update, :model => 'user', :id => '1', :name => 'fred', :email => 'smith'
+        put :update, :model => 'users', :id => '1', :name => 'fred', :email => 'smith'
         ActiveSupport::JSON.decode(response.body).should == 
         ActiveSupport::JSON.decode(
             {"success"=>"true"}.to_json)
@@ -146,7 +151,7 @@ describe Amos::AmosController do
         user.should_receive('update_attributes').with('name' => 'fred', 'email' => 'smith'){false}
       end
       it "returns a fail response" do
-        put :update, :model => 'user', :id => '1', :name => 'fred', :email => 'smith'
+        put :update, :model => 'users', :id => '1', :name => 'fred', :email => 'smith'
         ActiveSupport::JSON.decode(response.body).should == 
         ActiveSupport::JSON.decode(
             {"success"=>"false"}.to_json)

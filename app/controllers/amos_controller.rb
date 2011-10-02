@@ -3,8 +3,9 @@ module Amos
 
     unloadable
 
+    before_filter :set_model
+    
     def index
-      @model = params[:model].camelize
       records = self.instance_eval("#{@model}.all")
       result_records = []
       records.each{|rec|
@@ -16,7 +17,6 @@ module Amos
     end
 
     def show
-      @model = params[:model].camelize
       record = self.instance_eval("#{@model}.find(#{params[:id]})")
       
       result = {}
@@ -26,8 +26,6 @@ module Amos
      end
      
    def destroy
-     @model = params[:model].camelize
-     
      begin
        record = self.instance_eval("#{@model}.find(#{params[:id]})")
        record.destroy
@@ -38,7 +36,6 @@ module Amos
     end
     
     def update
-      @model = params[:model].camelize
       record = self.instance_eval("#{@model}.find(#{params[:id]})")
       attributes = Hash.new 
       params.each_pair{|p, v| attributes[p] = v}
@@ -54,7 +51,14 @@ module Amos
     end
 
   protected
-  
+    def set_model
+      m = params[:model]
+      if m.end_with? 's' 
+        m.chop!
+      end
+      @model = m.camelize
+    end
+    
     def filter_record result, record
       record.attributes.each_pair{|key, value|
         result[key] = value if (key != 'created_at' && key != 'updated_at')
