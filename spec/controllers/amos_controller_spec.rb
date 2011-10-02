@@ -108,9 +108,9 @@ describe Amos::AmosController do
       end
     end
 
-    context 'successful operation' do
+    context 'failed operation' do
       before(:each) do
-        User.should_receive('find').with(1){RecordNotFound.new}
+        User.should_receive('find').with(1){ActiveRecord::RecordNotFound.new}
        end
       it "returns a fail response" do
          delete :destroy, :model => 'users', :id => '1'
