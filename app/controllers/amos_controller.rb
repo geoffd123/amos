@@ -10,16 +10,14 @@ module Amos
       records = self.instance_eval("#{@model}.all")
       result_records = []
       records.each{|rec|
-        result = {}
-        filter_record result, rec
+        result = filter_record rec
         result_records << result
       } unless records.nil?
       render :json => result_records 
     end
 
     def show
-      result = {}
-      filter_record result, @record
+      result = filter_record @record
       render :json => result
      end
      
@@ -33,12 +31,7 @@ module Amos
     end
     
     def update
-      attributes = Hash.new 
-      params.each_pair{|p, v| attributes[p] = v}
-      attributes.delete('id')
-      attributes.delete('model')
-      attributes.delete('controller')
-      attributes.delete('action')     
+      attributes = remove_attributes_from ['id', 'model', 'controller', 'action'], params.clone 
       if @record.update_attributes(attributes)
         render :json => {:success => "true"}
       else
@@ -50,9 +43,7 @@ module Amos
   
     def set_model
       m = params[:model]
-      if m.end_with? 's' 
-        m.chop!
-      end
+      m.chop! if m.end_with? 's'
       @model = m.camelize
     end
   
@@ -60,10 +51,13 @@ module Amos
         @record = self.instance_eval("#{@model}.find(#{params[:id]})")
     end
     
-    def filter_record result, record
-      record.attributes.each_pair{|key, value|
-        result[key] = value if (key != 'created_at' && key != 'updated_at')
-      }
+    def filter_record record
+      remove_attributes_from ['created_at', 'updated_at'], record.attributes.clone 
+    end
+    
+    def remove_attributes_from attribute_names, collection
+      attribute_names.each{|key| collection.delete(key)}     
+      collection
     end
   end
 end
