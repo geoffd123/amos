@@ -59,6 +59,39 @@ describe AmosController do
       end
     end
   end
+ 
+  describe 'GET /user?fields=' do
+
+    context 'successful operation' do
+      before(:each) do
+        User.should_receive('all'){[user, user]}
+       end
+       
+      it "selects the correct model" do
+        get :index, :model => 'user', :fields => 'email'
+        assigns[:model].should == 'User'
+      end
+
+      it "calls the correct method" do
+        get :index, :model => 'user', :fields => 'email'
+      end
+  
+      it "determines the correct fields" do
+        get :index, :model => 'user', :fields => 'email'
+        assigns[:the_fields].should == ['email']
+      end
+  
+      it "returns the correct json data" do
+        get :index, :model => 'user', :fields => 'email'
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode([
+          {"email"=>"smith@smith.com"},
+          {"email"=>"smith@smith.com"}
+        ].to_json)
+      end
+    end
+  end
+  
   
   describe 'GET /user/:id' do
     context 'successful operation' do

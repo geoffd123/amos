@@ -7,10 +7,15 @@
     before_filter :set_current_record, :only => [:show, :update]
     
     def index
+      @the_fields = process_field_names([], params[:fields])
       records = self.instance_eval("#{@model}.all")
       result_records = []
       records.each{|rec|
-        result = filter_record rec
+        if @the_fields.count == 0
+          result = filter_record rec
+        else
+          result = select_fields rec, @the_fields
+        end
         result_records << result
       } unless records.nil?
       render :json => result_records 
@@ -90,5 +95,21 @@
       return [] if names.nil?
       names.split(',').each{|n| assocs << n}
     end
+    
+    def process_field_names fields, names
+      return [] if names.nil?
+      names.split(',').each{|n| fields << n}
+    end
+    
+    def select_fields record, fields
+      selected_fields = {}
+      record.attributes.each_pair{|key, value|
+        if fields.include?(key) 
+          selected_fields[key] = value
+        end
+      }
+      selected_fields
+    end
+    
   end
 
