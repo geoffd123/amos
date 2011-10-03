@@ -198,32 +198,68 @@ describe AmosController do
   end
   
   describe 'handling associations' do
- 
-    before(:each) do
-      User.should_receive('find').with(1){user}
-      user.stub('recipes'){[recipe, recipe]}
-    end
+    describe 'single association' do
+      before(:each) do
+        User.should_receive('find').with(1){user}
+        user.stub('recipes'){[recipe, recipe]}
+      end
 
-    it 'assigns the correct association names' do
-      get :show, :model => 'users', :id => '1', :association => 'recipes'
-      assigns[:the_associations].should == ['recipes']
-    end
+      it 'assigns the correct association names' do
+        get :show, :model => 'users', :id => '1', :association => 'recipes'
+        assigns[:the_associations].should == ['recipes']
+      end
   
-    it 'fetches the correct association' do
-      user.should_receive('recipes')
-      get :show, :model => 'users', :id => '1', :association => 'recipes'
-    end
+      it 'fetches the correct association' do
+        user.should_receive('recipes')
+        get :show, :model => 'users', :id => '1', :association => 'recipes'
+      end
   
-    it "returns the correct json data" do
-      get :show, :model => 'users', :id => '1', :association => 'recipes'
-      ActiveSupport::JSON.decode(response.body).should == 
-      ActiveSupport::JSON.decode(
-          {"name"=>"J Smith", "email"=>"smith@smith.com",
-            "recipes" => [
-              {'name' => 'Boiled eggs', 'description' => 'Grab an egg'},
-              {'name' => 'Boiled eggs', 'description' => 'Grab an egg'}
-            ]
-          }.to_json)
+      it "returns the correct json data" do
+        get :show, :model => 'users', :id => '1', :association => 'recipes'
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode(
+            {"name"=>"J Smith", "email"=>"smith@smith.com",
+              "recipes" => [
+                {'name' => 'Boiled eggs', 'description' => 'Grab an egg'},
+                {'name' => 'Boiled eggs', 'description' => 'Grab an egg'}
+              ]
+            }.to_json)
+      end
+    end
+    
+    describe 'multiple associations' do
+      before(:each) do
+        User.should_receive('find').with(1){user}
+        user.stub('recipes'){[recipe, recipe]}
+        user.stub('shops'){[recipe, recipe]}
+      end
+
+      it 'assigns the correct association names' do
+        get :show, :model => 'users', :id => '1', :association => 'recipes,shops'
+        assigns[:the_associations].should == ['recipes', 'shops']
+      end
+  
+      it 'fetches the correct associations' do
+        user.should_receive('recipes')
+        user.should_receive('shops')
+        get :show, :model => 'users', :id => '1', :association => 'recipes,shops'
+      end
+  
+      it "returns the correct json data" do
+        get :show, :model => 'users', :id => '1', :association => 'recipes,shops'
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode(
+            {"name"=>"J Smith", "email"=>"smith@smith.com",
+              "recipes" => [
+                {'name' => 'Boiled eggs', 'description' => 'Grab an egg'},
+                {'name' => 'Boiled eggs', 'description' => 'Grab an egg'}
+              ],
+              "shops" => [
+                {'name' => 'Boiled eggs', 'description' => 'Grab an egg'},
+                {'name' => 'Boiled eggs', 'description' => 'Grab an egg'}
+              ]
+            }.to_json)
+      end
     end
   end
  
