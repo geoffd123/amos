@@ -7,6 +7,14 @@ Background:
 	  | name     | email           |
 	  | J Smith  | smith@smith.com |
 	  | B Bloggs | b@bloggs.com    |
+	And the following recipes exists
+	  | name     | description |
+	  | Shopping | Go to the shops |
+	  | Cakes    | Buy stuff       |
+	  | Clean    | Hoover room     |
+	And "Shopping" belongs to "J Smith"
+	And "Cakes" belongs to "B Bloggs"
+	And "Clean" belongs to "J Smith" 
 
 Scenario: List users
     When the client requests GET /user
@@ -17,11 +25,24 @@ Scenario: List users
 	{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
 	]
 	"""
+	
 Scenario: List a single user
     When the client requests GET /users/1
     Then the response should be JSON:
 	"""
 	{"name" : "J Smith", "email": "smith@smith.com", "id": 1}
+	"""
+
+Scenario: List a single user with an association
+    When the client requests GET /users/1?association=recipes
+    Then the response should be JSON:
+	"""
+	{"name": "J Smith", "id": 1, "email": "smith@smith.com",  
+	  "recipes": [
+	    {"name": "Shopping", "id": 1, "description": "Go to the shops"}, 
+	    {"name": "Clean", "id": 3, "description": "Hoover room"}
+	  ]
+	}
 	"""
 
 Scenario: Successfully update a single user

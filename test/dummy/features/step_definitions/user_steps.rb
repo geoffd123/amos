@@ -18,3 +18,11 @@ Then /^the response should be JSON:$/ do |json|
   JSON.parse(last_response.body).should == JSON.parse(json)
 end
 
+Given /^"([^"]*)" belongs to "([^"]*)"$/ do |recipe_name, user_name|
+  rp = Recipe.find_by_name(recipe_name)
+  raise "Cannot find recipe with name #{recipe_name}" if rp.nil?
+  u = User.find_by_name(user_name)
+  raise "Cannot find user with name #{user_name}" if u.nil?
+  u.recipes << rp
+  u.save
+end
