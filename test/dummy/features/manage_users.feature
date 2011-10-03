@@ -25,6 +25,16 @@ Scenario: List users
 	{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
 	]
 	"""
+
+Scenario: List users with field list
+    When the client requests GET /user?fields=email
+    Then the response should be JSON:
+	"""
+	[
+	{"email": "smith@smith.com"},
+	{"email": "b@bloggs.com"}
+	]
+	"""
 	
 Scenario: List a single user
     When the client requests GET /users/1
@@ -43,6 +53,13 @@ Scenario: List a single user with an association
 	    {"name": "Clean", "id": 3, "description": "Hoover room"}
 	  ]
 	}
+	"""
+	
+Scenario: List a single user with field list
+    When the client requests GET /users/1?fields=email
+    Then the response should be JSON:
+	"""
+	{"email": "smith@smith.com"}  
 	"""
 
 Scenario: Successfully update a single user
