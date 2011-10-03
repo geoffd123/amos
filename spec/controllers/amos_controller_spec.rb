@@ -1,9 +1,10 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../test/spec_helper')
-
+require 'factory_girl'
 
 describe AmosController do
 
-  let(:user) {User.new(:name => 'J Smith', :email => 'smith@smith.com')}
+  let(:user) {FactoryGirl.build(:user)}
+  let(:recipe) {Factory.build(:recipe, :name => 'Boiled eggs', :description => 'Grab an egg', :user => user)}
 
   describe "routes" do
     it "routes /user to the index action" do
@@ -196,5 +197,34 @@ describe AmosController do
     end
   end
   
+  describe 'handling associations' do
+ 
+    before(:each) do
+      User.should_receive('find').with(1){user}
+      user.stub('recipes'){[recipe, recipe]}
+    end
+
+    it 'assigns the correct association names' do
+      get :show, :model => 'users', :id => '1', :association => 'recipes'
+      assigns[:the_associations].should == ['recipes']
+    end
   
+    it 'fetches the correct association' do
+      user.should_receive('recipes')
+      get :show, :model => 'users', :id => '1', :association => 'recipes'
+    end
+  
+    it "returns the correct json data" do
+      get :show, :model => 'users', :id => '1', :association => 'recipes'
+      ActiveSupport::JSON.decode(response.body).should == 
+      ActiveSupport::JSON.decode(
+          {"name"=>"J Smith", "email"=>"smith@smith.com",
+            "recipes" => [
+              {'name' => 'Boiled eggs', 'description' => 'Grab an egg'},
+              {'name' => 'Boiled eggs', 'description' => 'Grab an egg'}
+            ]
+          }.to_json)
+    end
+  end
+ 
 end

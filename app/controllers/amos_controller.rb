@@ -18,6 +18,17 @@
 
     def show
       result = filter_record @record
+      @the_associations = process_association_names([], params[:association])
+      if @the_associations.count > 0
+        @the_associations.each{|name|
+          assoc_records = self.instance_eval("@record.#{name}")
+          data = []
+          assoc_records.each{|ar|
+            data << filter_record(ar, ["#{@model.downcase}_id"])
+          }
+          result[name] = data
+        }
+      end
       render :json => result
      end
      
@@ -64,13 +75,20 @@
         @record = self.instance_eval("#{@model}.find(#{params[:id]})")
      end
     
-    def filter_record record
-      remove_attributes_from ['created_at', 'updated_at'], record.attributes.clone 
+    def filter_record record, extras = nil
+      data = remove_attributes_from ['created_at', 'updated_at'], record.attributes.clone 
+      data = remove_attributes_from extras , data unless extras.nil?
+      data
     end
     
     def remove_attributes_from attribute_names, collection
       attribute_names.each{|key| collection.delete(key)}     
       collection
+    end
+    
+    def process_association_names assocs, names
+      return [] if names.nil?
+      names.split(',').each{|n| assocs << n}
     end
   end
 
