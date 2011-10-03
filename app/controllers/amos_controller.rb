@@ -22,7 +22,13 @@
     end
 
     def show
-      result = filter_record @record
+      @the_fields = process_field_names([], params[:fields])
+      if @the_fields.count == 0
+        result = filter_record @record
+      else
+        result = select_fields @record, @the_fields
+      end
+      
       @the_associations = process_association_names([], params[:association])
       if @the_associations.count > 0
         @the_associations.each{|name|
