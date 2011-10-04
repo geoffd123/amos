@@ -3,12 +3,15 @@
 AMOS is a rails plugin that provides a simple server that uses the url to decide which model to deliver.  It is intended for 
 front-end applications that use something like javascriptMVC.
 
-E.g. If the incoming request is /recipe it executes the index action which does a find(:all) in the Recipe modes.
+E.g. If the incoming request is /recipe it executes the index action which does a find(:all) on the Recipe model.
 
 == Supported actions
 
   :get => "/user" returns array of all users
+  :get => "/user?fields=name,email" returns only the name and email attributes
   :get => "/users/1" returns record for user 1
+  :get => "/users/1?fields=name,email" returns only the name and email attributes for user 1
+  :get => "/users/1?associations=posts" returns the record for user plus any post
   :delete => "/users/1" deletes record 1 from users, returns success => true / false
   :put => "/users/1" + form data. Updates user record 1.  Returns success => true / false
   :post => "/users" + form data.  Returns details of new record on success, or errors array on failure
@@ -17,8 +20,58 @@ E.g. If the incoming request is /recipe it executes the index action which does 
 
 Distributed under the MIT License, all rights reserved 2011 Geoff Drake
 
+== Installation
+Create a rails application as normal using:
+
+	rails create MyApp
+	
+Add the following line to you Gemfile
+
+	gem 'amos'
+
+Run
+	bundle install
+	
+Amos uses cancan[https://github.com/ryanb/cancan] for its security checking so you need to add the following class in *app/models/ability.rb*
+	
+	class Ability
+	  include CanCan::Ability
+
+	  def initialize(user)
+	    can :manage, :all
+	  end
+	end
+	
+Replace the code inside the initialize with your requirements.  There is a skeleton class in lib/app/models/ability.rb, so 
+if you are getting authorisation errors you have not overridden that version. 
+
+Cancan also needs access to a method called current_user in the controllers.  If you are using devise or similar 
+this should automatically be available.
+
+If not you will need to define the following in your Applicationcontroller class:
+
+    class ApplicationController < ActionController::Base
+      def current_user
+        nil
+      end
+    end
+    
+If you are using user authentication replace the nil return with the current user record.
+
+Finally create some models that match the code you have on the front-end.
+
+  rails g model recipes name:string description:string
+
+And start the server
+
+  rails s
+
+Your models should now be available on /recipe etc.
+
+Take a look at spec/controllers/amos_controller_spec.rb and test/dummy/features/amos.feature for some examples of accessing 
+the data and what is returned.
+
+
 == Thing to to
-* Publish as a gem
-* Add installation instructions
-* Add security
 * More tests against a javascriptMVC application
+* Add code to support rails dynamic finders.
