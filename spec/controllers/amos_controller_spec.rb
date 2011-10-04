@@ -38,6 +38,7 @@ describe AmosController do
 
     context 'successful operation' do
       before(:each) do
+        setAbilityAuthorized
         User.should_receive('all'){[user]}
        end
        
@@ -64,6 +65,7 @@ describe AmosController do
 
     context 'successful operation' do
       before(:each) do
+        setAbilityAuthorized
         User.should_receive('all'){[user, user]}
        end
        
@@ -96,6 +98,7 @@ describe AmosController do
   describe 'GET /user/:id' do
     context 'successful operation' do
       before(:each) do
+        setAbilityAuthorized
         User.should_receive('find').with(1){user}
       end
 
@@ -121,6 +124,7 @@ describe AmosController do
 
     context 'successful operation' do
       before(:each) do
+        setAbilityAuthorized
         User.should_receive('find').with(1){user}
        end
        
@@ -153,6 +157,7 @@ describe AmosController do
     
     context 'successful operation' do
       before(:each) do
+        setAbilityAuthorized
         User.should_receive('find').with(1){user}
         user.should_receive('destroy')
       end
@@ -190,6 +195,7 @@ describe AmosController do
   describe 'PUT /user/:id' do
     context 'successful operation' do
       before(:each) do
+        setAbilityAuthorized
         User.should_receive('find').with(1){user}
         user.should_receive('update_attributes').with('name' => 'fred', 'email' => 'smith'){true}
       end
@@ -213,6 +219,7 @@ describe AmosController do
     
     context 'failed operation' do
       before(:each) do
+        setAbilityAuthorized
         User.should_receive('find').with(1){user}
         user.should_receive('update_attributes').with('name' => 'fred', 'email' => 'smith'){false}
       end
@@ -229,6 +236,7 @@ describe AmosController do
     
     context 'successful operation' do
       before(:each) do
+        setAbilityAuthorized
         @auser = User.new(:name => 'J Smith', :email => 'smith@smith.com')
         User.stub(:new){@auser}
         user.should_receive('save'){true}
@@ -265,6 +273,7 @@ describe AmosController do
   describe 'handling associations' do
     describe 'single association' do
       before(:each) do
+        setAbilityAuthorized
         User.should_receive('find').with(1){user}
         user.stub('recipes'){[recipe, recipe]}
       end
@@ -294,6 +303,7 @@ describe AmosController do
     
     describe 'multiple associations' do
       before(:each) do
+        setAbilityAuthorized
         User.should_receive('find').with(1){user}
         user.stub('recipes'){[recipe, recipe]}
         user.stub('shops'){[recipe, recipe]}
@@ -327,5 +337,24 @@ describe AmosController do
       end
     end
   end
- 
+
+  def setAbilityAuthorized
+    eval <<-eos
+  	class Ability
+  	  include CanCan::Ability
+
+  	  def initialize(user)
+  	    can :manage, :all
+  	  end
+  	end
+
+    class ApplicationController < ActionController::Base
+      def current_user
+        nil
+      end
+    end
+
+    eos
+
+  end 
 end
