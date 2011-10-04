@@ -59,6 +59,24 @@ describe AmosController do
         ].to_json)
       end
     end
+    
+    
+    context 'failed authorization' do
+      before(:each) do
+        setAbilityUnauthorized
+       end
+       
+       it "returns a 401 error code" do
+         get :index, :model => 'user'
+         response.status.should == 401 
+       end
+       
+      it "returns the correct json data" do
+        get :index, :model => 'user'
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode({"error" => "You are not authorized to access this data"}.to_json)
+      end
+    end
   end
  
   describe 'GET /user?fields=' do
@@ -136,9 +154,7 @@ describe AmosController do
         get :show, :model => 'users', :id => '1'
         response.status.should == 400 
       end
-    end
- 
- 
+    end 
   end
 
   describe 'GET /user/:id?fields=' do
@@ -217,6 +233,24 @@ describe AmosController do
         response.status.should == 400 
       end
     end
+
+    context 'failed authorization' do
+      before(:each) do
+        setAbilityUnauthorizedDeleteUser
+       end
+       
+       it "returns a 401 error code" do
+         delete :destroy, :model => 'users', :id => '1'
+         response.status.should == 401 
+       end
+       
+      it "returns the correct json data" do
+        delete :destroy, :model => 'users', :id => '1'
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode({"error" => "You are not authorized to access this data"}.to_json)
+      end
+    end
+    
   end
 
   describe 'PUT /user/:id' do
@@ -377,7 +411,9 @@ describe AmosController do
             }.to_json)
       end
     end
+    
   end
+  
 
   def setAbilityAuthorized
     eval <<-eos
@@ -398,4 +434,47 @@ describe AmosController do
     eos
 
   end 
+
+  def setAbilityUnauthorized
+    eval <<-eos
+  	class Ability
+  	  include CanCan::Ability
+
+  	  def initialize(user)
+  	    cannot :manage, :all
+  	  end
+  	end
+
+    class ApplicationController < ActionController::Base
+      def current_user
+        nil
+      end
+    end
+
+    eos
+
+  end 
+
+  def setAbilityUnauthorizedDeleteUser
+    eval <<-eos
+  	class Ability
+  	  include CanCan::Ability
+
+  	  def initialize(user)
+  	    debugger
+  	    can :read, User
+  	    cannot :delete, User
+  	  end
+  	end
+
+    class ApplicationController < ActionController::Base
+      def current_user
+        nil
+      end
+    end
+
+    eos
+
+  end 
+
 end
