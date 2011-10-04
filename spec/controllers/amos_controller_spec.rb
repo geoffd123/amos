@@ -118,6 +118,27 @@ describe AmosController do
             {"name"=>"J Smith", "email"=>"smith@smith.com"}.to_json)
       end
     end
+ 
+    context 'failed operation' do
+      before(:each) do
+        setAbilityAuthorized
+        User.should_receive('find').with(1).and_raise(ActiveRecord::RecordNotFound)
+      end
+
+      it "returns the correct json data" do
+        get :show, :model => 'users', :id => '1'
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode(
+            {"error"=>"Record 1 not found"}.to_json)
+      end
+      
+      it "returns a 400 error code" do
+        get :show, :model => 'users', :id => '1'
+        response.status.should == 400 
+      end
+    end
+ 
+ 
   end
 
   describe 'GET /user/:id?fields=' do
