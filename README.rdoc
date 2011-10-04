@@ -25,22 +25,22 @@ Create a rails application as normal using:
 
 	rails create MyApp
 	
-Add the following line to you Gemfile
+Add the following line to your Gemfile
 
-	gem 'amos'
+  gem 'amos'
 
 Run
-	bundle install
+  bundle install
 	
 Amos uses cancan[https://github.com/ryanb/cancan] for its security checking so you need to add the following class in *app/models/ability.rb*
 	
-	class Ability
-	  include CanCan::Ability
+  class Ability
+    include CanCan::Ability
 
-	  def initialize(user)
-	    can :manage, :all
-	  end
-	end
+    def initialize(user)
+      can :manage, :all
+    end
+  end
 	
 Replace the code inside the initialize with your requirements.  There is a skeleton class in lib/app/models/ability.rb, so 
 if you are getting authorisation errors you have not overridden that version. 
@@ -50,11 +50,11 @@ this should automatically be available.
 
 If not you will need to define the following in your Applicationcontroller class:
 
-    class ApplicationController < ActionController::Base
-      def current_user
-        nil
-      end
+  class ApplicationController < ActionController::Base
+    def current_user
+	  nil
     end
+  end
     
 If you are using user authentication replace the nil return with the current user record.
 
