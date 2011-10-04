@@ -52,7 +52,7 @@ If not you will need to define the following in your Applicationcontroller class
 
   class ApplicationController < ActionController::Base
     def current_user
-	  nil
+      nil
     end
   end
     
