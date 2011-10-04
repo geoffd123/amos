@@ -186,10 +186,7 @@ describe AmosController do
       end
     end
   end
-  
-  
-
-  
+    
   describe 'DELETE /user/:id' do
     
     context 'successful operation' do
@@ -236,7 +233,8 @@ describe AmosController do
 
     context 'failed authorization' do
       before(:each) do
-        setAbilityUnauthorizedDeleteUser
+        setAbilityUnauthorizedUser
+        User.stub('find').with(1){user}
        end
        
        it "returns a 401 error code" do
@@ -299,6 +297,23 @@ describe AmosController do
       end
 
     end
+    context 'failed authorization' do
+      before(:each) do
+        setAbilityUnauthorizedUser
+        User.stub('find').with(1){user}
+       end
+       
+       it "returns a 401 error code" do
+         put :update, :model => 'users', :id => '1', :name => 'fred', :email => ''
+         response.status.should == 401 
+       end
+       
+      it "returns the correct json data" do
+        put :update, :model => 'users', :id => '1', :name => 'fred', :email => ''
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode({"error" => "You are not authorized to access this data"}.to_json)
+      end
+    end
   end
   
   describe 'POST /user' do
@@ -343,6 +358,25 @@ describe AmosController do
       end
 
     end
+    
+    context 'failed authorization' do
+      before(:each) do
+        setAbilityUnauthorizedUser
+        User.stub('find').with(1){user}
+       end
+       
+       it "returns a 401 error code" do
+         post :create, :model => 'users', :name => 'J Smith'
+         response.status.should == 401 
+       end
+       
+      it "returns the correct json data" do
+        post :create, :model => 'users', :name => 'J Smith'
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode({"error" => "You are not authorized to access this data"}.to_json)
+      end
+    end
+    
   end
   
   describe 'handling associations' do
@@ -455,15 +489,16 @@ describe AmosController do
 
   end 
 
-  def setAbilityUnauthorizedDeleteUser
+  def setAbilityUnauthorizedUser
     eval <<-eos
   	class Ability
   	  include CanCan::Ability
 
   	  def initialize(user)
-  	    debugger
   	    can :read, User
   	    cannot :delete, User
+  	    cannot :update, User
+  	    cannot :create, User
   	  end
   	end
 

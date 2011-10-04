@@ -44,28 +44,40 @@
      end
      
    def destroy
+     if can? :delete, @record
        @record.destroy
        render :json => {:success => "true"}
+     else
+       render_authorized
+     end
     end
     
     def create
-      p = remove_attributes_from ['id', 'model', 'controller', 'action'], params.clone 
-      record = self.instance_eval("#{@model}.new(p)")
-     
-      if record.save
-          result = filter_record record
-          render :json => result
+      if can? :create, eval("#{@model}")
+        p = remove_attributes_from ['id', 'model', 'controller', 'action'], params.clone 
+        record = self.instance_eval("#{@model}.new(p)")
+
+        if record.save
+            result = filter_record record
+            render :json => result
         else
-          render :json => record.errors, :status => 400
+            render :json => record.errors, :status => 400
         end
+      else
+        render_authorized
+      end
     end
     
     def update
-      attributes = remove_attributes_from ['id', 'model', 'controller', 'action'], params.clone 
-      if @record.update_attributes(attributes)
-        render :json => attributes
+      if can? :update, eval("#{@model}")
+        attributes = remove_attributes_from ['id', 'model', 'controller', 'action'], params.clone 
+        if @record.update_attributes(attributes)
+          render :json => attributes
+        else
+          render :json => @record.errors, :status => 400
+        end
       else
-        render :json => @record.errors, :status => 400
+        render_authorized
       end
     end
 
@@ -75,8 +87,8 @@
       m = params[:model]
       m.chop! if m.end_with? 's'
       @model = m.camelize
-      if cannot? :read, @model
-        render :json => {:error => "You are not authorized to access this data"}, :status => 401
+      if cannot? :read, eval("#{@model}")
+        render_authorized
       end
     end
   
@@ -119,5 +131,8 @@
       selected_fields
     end
     
+    def render_authorized
+      render :json => {:error => "You are not authorized to access this data"}, :status => 401
+    end
   end
 
