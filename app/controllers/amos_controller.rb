@@ -80,6 +80,9 @@
       m = params[:model]
       m.chop! if m.end_with? 's'
       @model = m.camelize
+      if cannot? :read, @model
+        render :json => {:error => "You are not authorized to access this data"}, :status => 401
+      end
     end
   
     def set_current_record

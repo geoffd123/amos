@@ -18,6 +18,12 @@ Then /^the response should be JSON:$/ do |json|
   JSON.parse(last_response.body).should == JSON.parse(json)
 end
 
+Then /^the response should be status "([^"]*)" with JSON:$/ do |status, json|
+  last_response.status.should == status.to_i
+  JSON.parse(last_response.body).should == JSON.parse(json)
+end
+
+
 Given /^"([^"]*)" belongs to "([^"]*)"$/ do |recipe_name, user_name|
   rp = Recipe.find_by_name(recipe_name)
   raise "Cannot find recipe with name #{recipe_name}" if rp.nil?
@@ -25,4 +31,16 @@ Given /^"([^"]*)" belongs to "([^"]*)"$/ do |recipe_name, user_name|
   raise "Cannot find user with name #{user_name}" if u.nil?
   u.recipes << rp
   u.save
+end
+
+Given /^I have setup my ability class$/ do |code|
+  eval code
+end
+
+Given /^I am not logged in$/ do
+  class ApplicationController < ActionController::Base
+    def current_user
+      nil
+    end
+  end
 end
