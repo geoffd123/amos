@@ -4,7 +4,7 @@
     unloadable
 
     before_filter :set_model
-    before_filter :set_current_record, :only => [:show, :update]
+    before_filter :set_current_record, :only => [:show, :update, :destroy]
     
     def index
       @the_fields = process_field_names([], params[:fields])
@@ -44,13 +44,8 @@
      end
      
    def destroy
-     begin
-       set_current_record
        @record.destroy
        render :json => {:success => "true"}
-     rescue ActiveRecord::RecordNotFound => e
-       render :json => {:success => "false"}
-     end
     end
     
     def create
@@ -61,16 +56,16 @@
           result = filter_record record
           render :json => result
         else
-          render :json => record.errors
+          render :json => record.errors, :status => 400
         end
     end
     
     def update
       attributes = remove_attributes_from ['id', 'model', 'controller', 'action'], params.clone 
       if @record.update_attributes(attributes)
-        render :json => {:success => "true"}
+        render :json => attributes
       else
-        render :json => {:success => "false"}
+        render :json => @record.errors, :status => 400
       end
     end
 
@@ -86,7 +81,11 @@
     end
   
     def set_current_record
+      begin
         @record = self.instance_eval("#{@model}.find(#{params[:id]})")
+      rescue ActiveRecord::RecordNotFound => e
+        render :json => {:error => "Record #{params[:id]} not found"}, :status => 400
+      end
      end
     
     def filter_record record, extras = nil

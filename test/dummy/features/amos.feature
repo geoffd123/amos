@@ -15,6 +15,17 @@ Background:
 	And "Shopping" belongs to "J Smith"
 	And "Cakes" belongs to "B Bloggs"
 	And "Clean" belongs to "J Smith" 
+	And I have setup my ability class
+	"""
+	class Ability
+	  include CanCan::Ability
+
+	  def initialize(user)
+	    can :manage, :all
+	  end
+	end
+	"""
+	And I am not logged in
 
 Scenario: List users
     When the client requests GET /user
@@ -43,6 +54,13 @@ Scenario: List a single user
 	{"name" : "J Smith", "email": "smith@smith.com", "id": 1}
 	"""
 
+Scenario: Tries to access an invalid record
+    When the client requests GET /users/1000000
+    Then the response should be JSON:
+	"""
+	{"error": "Record 1000000 not found"}
+	"""
+
 Scenario: List a single user with an association
     When the client requests GET /users/1?association=recipes
     Then the response should be JSON:
@@ -66,7 +84,7 @@ Scenario: Successfully update a single user
     When the client requests PUT /users/1 with name "A Smith" and email "only@smith.com"
     Then the response should be JSON:
 	"""
-	{"success": "true"}
+	{"name": "A Smith", "email": "only@smith.com"}
 	"""
     And the client requests GET /user
     Then the response should be JSON:
@@ -110,7 +128,7 @@ Scenario: Fails to delete a single user
     When the client requests DELETE /users/1000000
     Then the response should be JSON:
 	"""
-	{"success": "false"}
+	{"error": "Record 1000000 not found"}
 	"""
     And the client requests GET /user
     Then the response should be JSON:

@@ -181,13 +181,19 @@ describe AmosController do
 
     context 'failed operation' do
       before(:each) do
+        setAbilityAuthorized
         User.should_receive('find').with(1).and_raise(ActiveRecord::RecordNotFound)
        end
       it "returns a fail response" do
          delete :destroy, :model => 'users', :id => '1'
         ActiveSupport::JSON.decode(response.body).should == 
         ActiveSupport::JSON.decode(
-            {"success"=>"false"}.to_json)
+            {"error"=>"Record 1 not found"}.to_json)
+      end
+
+      it "returns a 400 error code" do
+         delete :destroy, :model => 'users', :id => '1'
+        response.status.should == 400 
       end
     end
   end
@@ -213,7 +219,7 @@ describe AmosController do
         put :update, :model => 'users', :id => '1', :name => 'fred', :email => 'smith'
         ActiveSupport::JSON.decode(response.body).should == 
         ActiveSupport::JSON.decode(
-            {"success"=>"true"}.to_json)
+            {'name' => 'fred', 'email' => 'smith'}.to_json)
       end
     end
     
@@ -221,14 +227,22 @@ describe AmosController do
       before(:each) do
         setAbilityAuthorized
         User.should_receive('find').with(1){user}
-        user.should_receive('update_attributes').with('name' => 'fred', 'email' => 'smith'){false}
+        user.should_receive('update_attributes').with('name' => 'fred', 'email' => ''){false}
+        user.should_receive('errors'){{:email => ["can't be blank"]}}
       end
+      
       it "returns a fail response" do
-        put :update, :model => 'users', :id => '1', :name => 'fred', :email => 'smith'
+        put :update, :model => 'users', :id => '1', :name => 'fred', :email => ''
         ActiveSupport::JSON.decode(response.body).should == 
         ActiveSupport::JSON.decode(
-            {"success"=>"false"}.to_json)
+            {"email"=>["can't be blank"]}.to_json)
       end
+
+      it "returns a 400 error code" do
+        put :update, :model => 'users', :id => '1', :name => 'fred', :email => ''
+        response.status.should == 400 
+      end
+
     end
   end
   
@@ -267,6 +281,12 @@ describe AmosController do
         ActiveSupport::JSON.decode(
             {"email"=>["can't be blank"]}.to_json)
       end
+
+      it "returns a 400 error code" do
+        post :create, :model => 'users', :name => 'J Smith'
+        response.status.should == 400 
+      end
+
     end
   end
   
