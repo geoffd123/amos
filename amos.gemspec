@@ -2,13 +2,34 @@
 # project in your rails apps through git.
 Gem::Specification.new do |s|
   s.name = "amos"
+  s.version = "0.0.3"
+
   s.summary = "amos - a model only server."
   s.description = "A simple server that determines the model and action data based upon the incoming url."
-  s.files = Dir["lib/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
-  s.version = "0.0.2"
-  s.required_ruby_version = '>= 1.8.1'
-  s.add_dependency('rails', '>= 3.0.4')
+
+  s.files = Dir["lib/**/*"] + 
+               ["MIT-LICENSE", "Rakefile", "README.rdoc"] + 
+            Dir["app/**/*"] + 
+            Dir["config/**/*"]
+
   s.author = 'Geoff Drake'
   s.email = 'drakeg@mandes.com'
   s.homepage = 'http://rubygems.org/gems/amos'
+
+  s.required_ruby_version = '>= 1.8.1'
+  s.add_dependency('rails', '~> 3.0')
+  s.add_dependency('cancan', '>= 1.6.6')
+  
+  
+  s.add_development_dependency('database_cleaner')
+  s.add_development_dependency('sqlite3-ruby')
+  s.add_development_dependency('ruby-debug')
+  s.add_development_dependency('launchy')
+  s.add_development_dependency('syntax')
+  s.add_development_dependency('rspec')
+  s.add_development_dependency('rspec-rails')
+  s.add_development_dependency('factory_girl_rails')
+  s.add_development_dependency('cucumber-rails')
+  s.add_development_dependency('pickle')
+  
 end

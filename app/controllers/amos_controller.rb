@@ -1,4 +1,5 @@
-
+ require 'cancan'
+ 
   class AmosController < ApplicationController
 
     unloadable

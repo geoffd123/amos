@@ -16,20 +16,24 @@ E.g. If the incoming request is /recipe it executes the index action which does 
   :put => "/users/1" + form data. Updates user record 1.  Returns success => true / false
   :post => "/users" + form data.  Returns details of new record on success, or errors array on failure
 
-*Currently only available via github*. I will be releasing the amos gem once I have done some more testing
+*Amos gem is now available on rubygems.org*
 
 Distributed under the MIT License, all rights reserved 2011 Geoff Drake
+
+== Source
+The source is available on GitHub https://github.com/geoffd123/amos
 
 == Installation
 Create a rails application as normal using:
 
-	rails create MyApp
+  rails create MyApp
 	
 Add the following line to your Gemfile
 
   gem 'amos'
 
 Run
+
   bundle install
 	
 Amos uses cancan[https://github.com/ryanb/cancan] for its security checking so you need to add the following class in *app/models/ability.rb*
@@ -42,8 +46,8 @@ Amos uses cancan[https://github.com/ryanb/cancan] for its security checking so y
     end
   end
 	
-Replace the code inside the initialize with your requirements.  There is a skeleton class in lib/app/models/ability.rb, so 
-if you are getting authorisation errors you have not overridden that version. 
+Replace the code inside the initialize with your requirements.  There is a skeleton class in lib/app/models/ability.rb that 
+disallows any access, so if you are getting authorisation errors you have not overridden that version correctly. 
 
 Cancan also needs access to a method called current_user in the controllers.  If you are using devise or similar 
 this should automatically be available.
@@ -75,3 +79,16 @@ the data and what is returned.
 == Thing to to
 * More tests against a javascriptMVC application
 * Add code to support rails dynamic finders.
+
+== Change list
+=== 0.0.3
+Fixed problem with incomplete file list in gemspec.
+Fixed problem with cancan methods not being found when using gem in a rails app.
+
+=== 0.0.2
+Implemented fields filters, associations.
+Changed js errors to return correct status codes
+Implemented pluggable security using CanCan
+
+=== 0.0.1
+Basic skeleton and minimal functionality
