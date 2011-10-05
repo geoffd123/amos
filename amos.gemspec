@@ -10,4 +10,5 @@ Gem::Specification.new do |s|
   s.add_dependency('rails', '>= 3.0.4')
   s.author = 'Geoff Drake'
   s.email = 'drakeg@mandes.com'
+  s.homepage = 'http://rubygems.org/gems/amos'
 end
