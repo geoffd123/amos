@@ -83,6 +83,67 @@ describe AmosController do
       end
     end
   end
+
+  describe 'GET /user/find' do
+
+    context 'successful operation' do
+      before(:each) do
+        setAbilityAuthorized
+        User.stub('find_by_name').with('J Smith'){[user]}
+       end
+       
+      it "selects the correct model" do
+        get :find, :model => 'user', :query => 'by_name', :term => 'J Smith'
+        assigns[:model].should == 'User'
+      end
+
+      it "calls the correct method with no field filter" do
+        User.should_receive('find_by_name').with('J Smith'){[user]}
+        get :find, :model => 'user', :query => 'by_name',:term => 'J Smith'
+      end
+  
+      it "returns the correct json data with no field filter" do
+        get :find, :model => 'user', :query =>'by_name',:term => 'J Smith'
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode([
+            {"name" => "J Smith", "email"=>"smith@smith.com"}
+        ].to_json)
+      end
+      
+      it "determines the correct fields with field filter" do
+        get :find, :model => 'user', :query =>'by_name',:term => 'J Smith', :fields => 'email'
+        assigns[:the_fields].should == ['email']
+      end
+  
+      it "returns the correct json data with field filter" do
+        get :find, :model => 'user', :query =>'by_name',:term => 'J Smith', :fields => 'email'
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode([
+          {"email"=>"smith@smith.com"}
+        ].to_json)
+      end
+      
+    end
+    
+    
+    context 'failed authorization' do
+      before(:each) do
+        setAbilityUnauthorized
+       end
+       
+       it "returns a 401 error code" do
+         get :find, :model => 'user', :query =>'by_name',:term => 'J Smith'
+         response.status.should == 401 
+       end
+       
+      it "returns the correct json data" do
+        get :find, :model => 'user', :query =>'by_name',:term => 'J Smith'
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode({"error" => "You are not authorized to access this data"}.to_json)
+      end
+    end
+  end
+
  
   describe 'GET /user?fields=' do
 

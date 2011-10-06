@@ -22,6 +22,21 @@
       render :json => result_records 
     end
 
+    def find
+      @the_fields = process_field_names([], params[:fields])
+      records = self.instance_eval("#{@model}.find_#{params[:query]}('#{params[:term]}')")
+      result_records = []
+      records.each{|rec|
+        if @the_fields.count == 0
+          result = filter_record rec
+        else
+          result = select_fields rec, @the_fields
+        end
+        result_records << result
+      } unless records.nil?
+      render :json => result_records 
+    end
+    
     def show
       @the_fields = process_field_names([], params[:fields])
       if @the_fields.count == 0
