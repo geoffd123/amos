@@ -12,6 +12,11 @@ describe AmosController do
         should route_to(:controller => "amos", :action => "index", :model => 'user')
     end
 
+    it "routes /user/query to the query action" do
+      { :get => "/user/find/by_name" }.
+        should route_to(:controller => "amos", :action => "find", :model => 'user', :query => 'by_name')
+    end
+
     it "routes show /user/1 to the show action" do
       { :get => "/users/1" }.
         should route_to(:controller => "amos", :action => "show", :model => 'users', :id => '1')
