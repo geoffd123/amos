@@ -2,7 +2,7 @@
 # project in your rails apps through git.
 Gem::Specification.new do |s|
   s.name = "amos"
-  s.version = "0.0.3"
+  s.version = "0.0.4"
 
   s.summary = "amos - a model only server."
   s.description = "A simple server that determines the model and action data based upon the incoming url."
@@ -10,7 +10,14 @@ Gem::Specification.new do |s|
   s.files = Dir["lib/**/*"] + 
                ["MIT-LICENSE", "Rakefile", "README.rdoc"] + 
             Dir["app/**/*"] + 
-            Dir["config/**/*"]
+            Dir["config/**/*"]+
+            Dir["spec/**/*"]+
+               ["test/spec_helper.rb", "test/test_helper.rb"]+
+            Dir["test/support/**/*"]+
+            Dir["test/dummy/app/**/*"]+
+            Dir["test/dummy/config/**/*"]+
+            Dir["test/dummy/db/migrate/**/*"]+
+            Dir["test/dummy/features/**/*"]
 
   s.author = 'Geoff Drake'
   s.email = 'drakeg@mandes.com'

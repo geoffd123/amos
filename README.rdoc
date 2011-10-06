@@ -81,6 +81,9 @@ the data and what is returned.
 * Add code to support rails dynamic finders.
 
 == Change list
+=== Edge
+Added test and spec files to gemspec
+
 === 0.0.3
 Fixed problem with incomplete file list in gemspec.
 Fixed problem with cancan methods not being found when using gem in a rails app.
