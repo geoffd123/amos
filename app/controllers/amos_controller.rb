@@ -24,7 +24,9 @@
 
     def find
       @the_fields = process_field_names([], params[:fields])
-      records = self.instance_eval("#{@model}.find_#{params[:query]}('#{params[:term]}')")
+      terms = params[:term].split(',').collect{|t| "'#{t}'"}.join(',')
+      p "terms = #{terms}"
+      records = self.instance_eval("#{@model}.find_#{params[:query]}(#{terms})")
       result_records = []
       records.each{|rec|
         if @the_fields.count == 0

@@ -86,7 +86,7 @@ describe AmosController do
 
   describe 'GET /user/find' do
 
-    context 'successful operation' do
+    context 'successful operation : single term' do
       before(:each) do
         setAbilityAuthorized
         User.stub('find_by_name').with('J Smith'){[user]}
@@ -123,6 +123,26 @@ describe AmosController do
         ].to_json)
       end
       
+    end
+    
+    context 'successful operation : multiple terms' do
+      before(:each) do
+        setAbilityAuthorized
+        User.stub('find_by_name_and_email').with('J Smith', 'smith@smith.com'){[user]}
+       end
+       
+      it "calls the correct method with no field filter" do
+        User.should_receive('find_by_name_and_email').with('J Smith', 'smith@smith.com'){[user]}
+        get :find, :model => 'user', :query => 'by_name_and_email',:term => 'J Smith,smith@smith.com'
+      end
+  
+      it "returns the correct json data with no field filter" do
+        get :find, :model => 'user', :query => 'by_name_and_email',:term => 'J Smith,smith@smith.com'
+        ActiveSupport::JSON.decode(response.body).should == 
+        ActiveSupport::JSON.decode([
+            {"name" => "J Smith", "email"=>"smith@smith.com"}
+        ].to_json)
+      end
     end
     
     
