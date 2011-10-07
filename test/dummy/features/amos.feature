@@ -46,6 +46,25 @@ Scenario: List users with field list
 	{"email": "b@bloggs.com"}
 	]
 	"""
+
+Scenario: List recipes using a dynamic finder
+	Given the following recipes exists
+	  | name      | description          |
+	  | Shopping2 | Go to the shops      |
+	  | Cakes2    | Buy stuff            |
+	  | Clean2    | Hoover room          |
+	  | Shopping3 | Go to the shops      |
+	And "Shopping2" belongs to "J Smith"
+	And "Shopping3" belongs to "B Bloggs"
+ 	When the client requests GET /recipes/find/by_description?term=Go%20to%20the%20shops
+    Then the response should be JSON:
+	"""
+	[
+	  {"name" : "Shopping",  "description" : "Go to the shops", "id" : 1, "user_id" : 1},
+	  {"name" : "Shopping2", "description" : "Go to the shops", "id" : 4, "user_id" : 1},
+	  {"name" : "Shopping3", "description" : "Go to the shops", "id" : 7, "user_id" : 2}
+	]
+	"""
 	
 Scenario: List a single user
     When the client requests GET /users/1
@@ -79,6 +98,7 @@ Scenario: List a single user with field list
 	"""
 	{"email": "smith@smith.com"}  
 	"""
+
 
 Scenario: Successfully update a single user
     When the client requests PUT /users/1 with name "A Smith" and email "only@smith.com"

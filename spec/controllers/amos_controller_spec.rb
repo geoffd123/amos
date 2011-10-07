@@ -89,7 +89,7 @@ describe AmosController do
     context 'successful operation : single term' do
       before(:each) do
         setAbilityAuthorized
-        User.stub('find_by_name').with('J Smith'){[user]}
+        User.stub('find_all_by_name').with('J Smith'){[user]}
        end
        
       it "selects the correct model" do
@@ -98,7 +98,7 @@ describe AmosController do
       end
 
       it "calls the correct method with no field filter" do
-        User.should_receive('find_by_name').with('J Smith'){[user]}
+        User.should_receive('find_all_by_name').with('J Smith'){[user]}
         get :find, :model => 'user', :query => 'by_name',:term => 'J Smith'
       end
   
@@ -128,11 +128,11 @@ describe AmosController do
     context 'successful operation : multiple terms' do
       before(:each) do
         setAbilityAuthorized
-        User.stub('find_by_name_and_email').with('J Smith', 'smith@smith.com'){[user]}
+        User.stub('find_all_by_name_and_email').with('J Smith', 'smith@smith.com'){[user]}
        end
        
       it "calls the correct method with no field filter" do
-        User.should_receive('find_by_name_and_email').with('J Smith', 'smith@smith.com'){[user]}
+        User.should_receive('find_all_by_name_and_email').with('J Smith', 'smith@smith.com'){[user]}
         get :find, :model => 'user', :query => 'by_name_and_email',:term => 'J Smith,smith@smith.com'
       end
   

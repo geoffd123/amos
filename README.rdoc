@@ -83,6 +83,7 @@ the data and what is returned.
 == Change list
 === Edge
 Added test and spec files to gemspec
+Added functionality to allow use of rails dynamic finders
 
 === 0.0.3
 Fixed problem with incomplete file list in gemspec.

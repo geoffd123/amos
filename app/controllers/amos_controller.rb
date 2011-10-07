@@ -1,4 +1,5 @@
  require 'cancan'
+ require 'ruby-debug'
  
   class AmosController < ApplicationController
 
@@ -25,8 +26,11 @@
     def find
       @the_fields = process_field_names([], params[:fields])
       terms = params[:term].split(',').collect{|t| "'#{t}'"}.join(',')
-      p "terms = #{terms}"
-      records = self.instance_eval("#{@model}.find_#{params[:query]}(#{terms})")
+      query = "#{@model}.find_#{params[:query]}(:all, #{terms})"
+            
+      records = self.instance_eval("#{@model}.find_all_#{params[:query]}(#{terms})")
+      records = [] if records.nil?
+
       result_records = []
       records.each{|rec|
         if @the_fields.count == 0
