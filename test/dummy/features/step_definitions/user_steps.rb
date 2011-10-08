@@ -1,3 +1,4 @@
+
 When /^the client requests GET (.*)$/ do |path|
   get(path)
 end
@@ -33,6 +34,14 @@ Given /^"([^"]*)" belongs to "([^"]*)"$/ do |recipe_name, user_name|
   u.save
 end
 
+Given /^pagination is set for "([^"]*)" model$/ do |model|
+  self.instance_eval("#{model}.paginate_for")
+end
+
+Given /^there are (\d+) items per page$/ do |num|
+  AmosPagination.items_per_page = num
+end
+
 Given /^I have setup my ability class$/ do |code|
   eval code
 end
@@ -44,3 +53,5 @@ Given /^I am not logged in$/ do
     end
   end
 end
+
+
