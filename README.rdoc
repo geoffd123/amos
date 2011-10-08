@@ -78,7 +78,7 @@ the data and what is returned.
 
 == Thing to to
 * More tests against a javascriptMVC application
-* Add code to support rails dynamic finders.
+* Add code to support pagination.
 
 == Change list
 === Edge
