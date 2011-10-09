@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.8.1'
   s.add_dependency('rails', '~> 3.0')
   s.add_dependency('cancan', '>= 1.6.6')
-  
+  s.add_dependency('will_paginate', '~> 3.0.pre2')
   
   s.add_development_dependency('database_cleaner')
   s.add_development_dependency('sqlite3-ruby')

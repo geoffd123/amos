@@ -52,7 +52,7 @@ disallows any access, so if you are getting authorisation errors you have not ov
 Cancan also needs access to a method called current_user in the controllers.  If you are using devise or similar 
 this should automatically be available.
 
-If not you will need to define the following in your Applicationcontroller class:
+If not you will need to define the following in your ApplicationController class:
 
   class ApplicationController < ActionController::Base
     def current_user
@@ -75,15 +75,28 @@ Your models should now be available on /recipe etc.
 Take a look at spec/controllers/amos_controller_spec.rb and test/dummy/features/amos.feature for some examples of accessing 
 the data and what is returned.
 
+If you want to have the index and dynamic finder results paginated include this at the top of your model:
 
-== Thing to to
+  User < ActiveRecord::Base
+    paginate_results
+
+    .... your code ....
+
+  end
+
+This will use will_paginate to paginate the results.
+
+== Things to to
 * More tests against a javascriptMVC application
-* Add code to support pagination.
 
 == Change list
 === Edge
+In progress
+
+=== 0.0.4
 Added test and spec files to gemspec
 Added functionality to allow use of rails dynamic finders
+Added ability to paginate index and dynamic finder results
 
 === 0.0.3
 Fixed problem with incomplete file list in gemspec.
