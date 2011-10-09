@@ -2,7 +2,7 @@
 # project in your rails apps through git.
 Gem::Specification.new do |s|
   s.name = "amos"
-  s.version = "0.0.4"
+  s.version = "0.0.5"
 
   s.summary = "amos - a model only server."
   s.description = "A simple server that determines the model and action data based upon the incoming url."
