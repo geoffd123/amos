@@ -531,6 +531,38 @@ describe AmosController do
             }.to_json)
       end
     end
+  
+    describe 'GET /user with pagination' do
+
+      context 'successful operation' do
+        before(:each) do
+          setAbilityAuthorized
+          User.paginate_for :index
+          User.stub('paginate'){[user,user,user]}
+         end
+
+        it "calls the correct method" do
+          User.should_receive('paginate').with(:page => 2, :per_page => 30){[user]}
+          get :index, :model => 'user', :page => 2
+        end
+
+        it "sets paginate flag" do
+          get :index, :model => 'user', :page => 2
+          assigns[:paginate_flag].should == true
+        end
+
+        it "returns the correct json data" do
+          get :index, :model => 'user'
+          ActiveSupport::JSON.decode(response.body).should == 
+          ActiveSupport::JSON.decode([
+            {"name" => "J Smith", "email"=>"smith@smith.com"},
+            {"name" => "J Smith", "email"=>"smith@smith.com"},
+            {"name" => "J Smith", "email"=>"smith@smith.com"}
+          ].to_json)
+        end
+      end
+
+    end
     
   end
   

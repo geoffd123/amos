@@ -39,7 +39,7 @@ Given /^pagination is set for "([^"]*)" model$/ do |model|
 end
 
 Given /^there are (\d+) items per page$/ do |num|
-  per_page = num
+  WillPaginate.per_page = num
 end
 
 Given /^I have setup my ability class$/ do |code|

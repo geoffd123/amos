@@ -7,10 +7,16 @@
 
     before_filter :set_model
     before_filter :set_current_record, :only => [:show, :update, :destroy]
+    before_filter :should_paginate
     
     def index
       @the_fields = process_field_names([], params[:fields])
-      records = self.instance_eval("#{@model}.all")
+      if @paginate_flag
+        records = self.instance_eval("#{@model}.paginate(:page => params[:page], :per_page => ActiveRecord::Base.per_page)")
+      else
+        records = self.instance_eval("#{@model}.all")
+      end
+      
       result_records = []
       records.each{|rec|
         if @the_fields.count == 0
@@ -155,6 +161,10 @@
     
     def render_authorized
       render :json => {:error => "You are not authorized to access this data"}, :status => 401
+    end
+    
+    def should_paginate
+      @paginate_flag = self.instance_eval("#{@model}.paginate_actions").include?(params[:action])
     end
   end
 

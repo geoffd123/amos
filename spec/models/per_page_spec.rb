@@ -23,17 +23,17 @@ describe User do
   
     it "should set the default action" do
       User.paginate_for
-      User.paginate_actions.should == [:index]
+      User.paginate_actions.should == ['index']
     end
 
     it "should set an individial action" do
       User.paginate_for :find
-      User.paginate_actions.should == [:find]
+      User.paginate_actions.should == ['find']
     end
 
     it "should set multiple actions" do
       User.paginate_for [:find, :seek, :index]
-      User.paginate_actions.should == [:find, :seek, :index]
+      User.paginate_actions.should == ['find', 'seek', 'index']
     end
 
   end
