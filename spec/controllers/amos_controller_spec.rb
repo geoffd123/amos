@@ -563,6 +563,53 @@ describe AmosController do
       end
 
     end
+
+    describe 'GET /user/find with pagination' do
+
+      context 'successful operation : single term' do
+        before(:each) do
+          setAbilityAuthorized
+          User.paginate_results
+          result = []
+          User.stub('scoped_by_name').with('J Smith'){result}
+          result.stub('paginate'){[user, user, user]}
+         end
+
+        it "calls the correct method with no field filter" do
+          result = [user, user, user]
+          User.should_receive('scoped_by_name').with('J Smith'){result}
+          result.should_receive('paginate'){[user, user, user]}
+          get :find, :model => 'user', :query => 'by_name',:term => 'J Smith'
+        end
+
+        it "returns the correct json data with no field filter" do
+          get :find, :model => 'user', :query =>'by_name',:term => "J Smith"
+          ActiveSupport::JSON.decode(response.body).should == 
+          ActiveSupport::JSON.decode([
+            {"name" => "J Smith", "email"=>"smith@smith.com"},
+            {"name" => "J Smith", "email"=>"smith@smith.com"},
+            {"name" => "J Smith", "email"=>"smith@smith.com"}
+          ].to_json)
+        end
+
+        it "determines the correct fields with field filter" do
+          get :find, :model => 'user', :query =>'by_name',:term => 'J Smith', :fields => 'email'
+          assigns[:the_fields].should == ['email']
+        end
+
+        it "returns the correct json data with field filter" do
+          get :find, :model => 'user', :query =>'by_name',:term => 'J Smith', :fields => 'email'
+          ActiveSupport::JSON.decode(response.body).should == 
+          ActiveSupport::JSON.decode([
+            {"email"=>"smith@smith.com"},
+            {"email"=>"smith@smith.com"},
+            {"email"=>"smith@smith.com"}
+          ].to_json)
+        end
+
+      end
+
+    end
     
   end
   

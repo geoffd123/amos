@@ -32,9 +32,13 @@
     def find
       @the_fields = process_field_names([], params[:fields])
       terms = params[:term].split(',').collect{|t| "'#{t}'"}.join(',')
-      query = "#{@model}.find_#{params[:query]}(:all, #{terms})"
-            
-      records = self.instance_eval("#{@model}.find_all_#{params[:query]}(#{terms})")
+      
+      if @paginate_flag
+        records = eval("#{@model}.scoped_#{params[:query]}(#{terms})").paginate(:page => params[:page], :per_page => ActiveRecord::Base.per_page)
+      else
+        query = "#{@model}.find_#{params[:query]}(:all, #{terms})"
+        records = self.instance_eval("#{@model}.find_all_#{params[:query]}(#{terms})")
+      end
       records = [] if records.nil?
 
       result_records = []
