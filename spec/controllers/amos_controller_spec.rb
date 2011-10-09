@@ -537,7 +537,7 @@ describe AmosController do
       context 'successful operation' do
         before(:each) do
           setAbilityAuthorized
-          User.paginate_for :index
+          User.paginate_results
           User.stub('paginate'){[user,user,user]}
          end
 

@@ -35,7 +35,7 @@ Given /^"([^"]*)" belongs to "([^"]*)"$/ do |recipe_name, user_name|
 end
 
 Given /^pagination is set for "([^"]*)" model$/ do |model|
-  self.instance_eval("#{model}.paginate_for")
+  self.instance_eval("#{model}.paginate_results")
 end
 
 Given /^there are (\d+) items per page$/ do |num|

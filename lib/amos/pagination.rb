@@ -4,13 +4,8 @@ module AmosPagination
   end
 
   module ClassMethods
-    def paginate_for action = :index
-      @paginate_actions = []
-      if action.is_a?(Array)
-        action.each{|a| @paginate_actions << a.to_s}
-      else
-        @paginate_actions << action.to_s
-      end
+    def paginate_results
+      @paginate_actions = ['index', 'find']
     end
     
     def paginate_actions

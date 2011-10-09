@@ -16,25 +16,14 @@ describe User do
     User.should respond_to('per_page')
   end
   
-  describe 'paginate_for' do
+  describe 'paginate_results' do
     it "should response to method" do
-      User.should respond_to('paginate_for')
+      User.should respond_to('paginate_results')
     end
   
-    it "should set the default action" do
-      User.paginate_for
-      User.paginate_actions.should == ['index']
+    it "should set the default actions" do
+      User.paginate_results
+      User.paginate_actions.should == ['index', 'find']
     end
-
-    it "should set an individial action" do
-      User.paginate_for :find
-      User.paginate_actions.should == ['find']
-    end
-
-    it "should set multiple actions" do
-      User.paginate_for [:find, :seek, :index]
-      User.paginate_actions.should == ['find', 'seek', 'index']
-    end
-
   end
 end
