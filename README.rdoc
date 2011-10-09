@@ -95,16 +95,21 @@ In progress
 
 === 0.0.4
 Added test and spec files to gemspec
+
 Added functionality to allow use of rails dynamic finders
+
 Added ability to paginate index and dynamic finder results
 
 === 0.0.3
 Fixed problem with incomplete file list in gemspec.
+
 Fixed problem with cancan methods not being found when using gem in a rails app.
 
 === 0.0.2
 Implemented fields filters, associations.
+
 Changed js errors to return correct status codes
+
 Implemented pluggable security using CanCan
 
 === 0.0.1
