@@ -6,7 +6,7 @@ class Ability
   end
 end
 
-class ApplicationController < ActionController::Base
+class AmosApplicationController < ActionController::Base
   def current_user
     nil
   end

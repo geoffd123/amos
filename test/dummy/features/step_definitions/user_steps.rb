@@ -47,7 +47,7 @@ Given /^I have setup my ability class$/ do |code|
 end
 
 Given /^I am not logged in$/ do
-  class ApplicationController < ActionController::Base
+  class AmosApplicationController < ActionController::Base
     def current_user
       nil
     end

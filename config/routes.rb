@@ -1,4 +1,4 @@
- Rails.application.routes.draw do
+Rails.application.routes.draw do
    # match 'with_id/:model/:id' => 'amos/amos#with_id'
    match ":model/find/:query" => "amos#find", :constraints => { :model => /.*/ }
    match ":model/:id" => "amos#show", :constraints => { :model => /.*/ }, :via => :get
