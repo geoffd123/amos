@@ -70,9 +70,7 @@
   protected
   
     def set_model
-      m = params[:model]
-      m.chop! if m.end_with? 's'
-      @model = m.camelize
+      @model = params[:model].gsub(/\.json$/i,'').singularize.camelize
       if cannot? :read, eval("#{@model}")
         render_authorized
       end
