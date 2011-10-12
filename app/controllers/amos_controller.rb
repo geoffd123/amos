@@ -10,9 +10,13 @@
     #before_filter :should_paginate
     
     def index
-      options = remove_attributes_from ['fields', 'model', 'controller', 'action'], params.clone
+      options = remove_attributes_from ['offset', 'limit','count', 'fields', 'model', 'controller', 'action'], params.clone
       options.underscore_keys!
-      records = self.instance_eval("#{@model}.list(options)")
+
+      params[:limit] = params[:limit] ? params[:limit].to_i : nil
+      params[:offset] = params[:offset] ? params[:offset].to_i : nil
+
+      records = @model.list(options)
       render :json => {
         :data => records.limit(params[:limit]).offset(params[:offset]).as_json(params[:fields]),
         :offset => params[:offset],
@@ -35,12 +39,12 @@
   end
     
   def create
-    if can? :create, eval("#{@model}")
+    if can? :create, @model
       attributes = remove_attributes_from ['fields','id', 'model', 'controller', 'action'], params.clone
       attributes.underscore_keys!
       attributes = set_association_keys_for(@model, attributes)
-      record = self.instance_eval("#{@model}.new(attributes)")
 
+      record = @model.new(attributes)
       if record.save
           render :json => record.as_json(params[:fields])
       else
@@ -52,7 +56,7 @@
   end
     
   def update
-    if can? :update, eval("#{@model}")
+    if can? :update, @model
       attributes = remove_attributes_from ['fields', 'id', 'model', 'controller', 'action'], params.clone
       attributes.underscore_keys!
       attributes = set_association_keys_for(@model, attributes)
@@ -70,8 +74,12 @@
   protected
   
     def set_model
-      @model = params[:model].gsub(/\.json$/i,'').singularize.camelize
-      if cannot? :read, eval("#{@model}")
+      begin
+        @model = params[:model].gsub(/\.json$/i,'').singularize.camelize.constantize
+      rescue
+        render :json => {:error => "Model not found"}, :status => 400
+      end
+      if cannot? :read, @model
         render_authorized
       end
     end
@@ -83,7 +91,7 @@
   
     def set_current_record
       begin
-        @record = self.instance_eval("#{@model}.find(#{params[:id]})")
+        @record = @model.find(params[:id])
       rescue ActiveRecord::RecordNotFound => e
         render :json => {:error => "Record #{params[:id]} not found"}, :status => 400
       end
