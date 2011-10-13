@@ -86,9 +86,9 @@ Your models should now be available on /recipe etc.
 Take a look at spec/controllers/amos_controller_spec.rb and test/dummy/features/amos.feature for some examples of accessing 
 the data and what is returned.
 
-If you want to us pagination add limit=n and offset=n to your query url
+If you want to use pagination add limit=n and offset=n to your query url
 
-  :get => "/user?limit=10&offset=20" returns an array of the next 10 users starting at record 10
+  :get => "/user?limit=10&offset=20" returns an array of the next 10 users starting at record 20
   
 
 == Things to to
