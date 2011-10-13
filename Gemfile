@@ -2,7 +2,6 @@ source "http://rubygems.org"
 
 gem "rails", "~>3.0"
 gem "cancan"
-gem "will_paginate", "~> 3.0.pre2"
 
 group :development, :test do
   gem 'database_cleaner'

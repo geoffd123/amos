@@ -8,14 +8,23 @@ E.g. If the incoming request is /recipe it executes the index action which does 
 == Supported actions
 
   :get => "/user" returns array of all users
+
   :get => "/user?fields[only]=name" returns only the name attribute
+
   :get => "/user?name=J%20Smith" returns all records with a name of J Smith
+
   :get => "/user?name=J%20Smith&email=smith@smith.com" returns all records with a name of J Smith and an email of smith@smith.com
+
   :get => "/users/1" returns record for user 1
+
   :get => "/users/1?fields[only]=name" returns only the name attribute for user 1
+
   :get => "/users/1?fields[include]=posts" returns the record for user plus any posts
+
   :delete => "/users/1" deletes record 1 from users, returns success => true / false
+
   :put => "/users/1" + form data. Updates user record 1.  Returns success => true / false
+
   :post => "/users" + form data.  Create a new record, returns details of new record on success, or errors array on failure
 
 *Amos gem is now available on rubygems.org*
@@ -94,6 +103,8 @@ Merged Nico's changes to make returned data more jsmvc compliant and the accessi
 Updated specs and cukes to test the above changes.
 
 Updated README to conform to above changes.
+
+Removed will_paginate gem as pagination is now controlled from the client.
 
 === 0.0.4
 Added test and spec files to gemspec
