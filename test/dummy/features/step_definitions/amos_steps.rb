@@ -34,14 +34,6 @@ Given /^"([^"]*)" belongs to "([^"]*)"$/ do |recipe_name, user_name|
   u.save
 end
 
-Given /^pagination is set for "([^"]*)" model$/ do |model|
-  self.instance_eval("#{model}.paginate_results")
-end
-
-Given /^there are (\d+) items per page$/ do |num|
-  WillPaginate.per_page = num
-end
-
 Given /^I have setup my ability class$/ do |code|
   eval code
 end

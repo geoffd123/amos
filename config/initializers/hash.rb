@@ -16,6 +16,7 @@ class Hash
   def underscore_keys
     dup.underscore_keys!
   end
+  
   def underscore_keys!
     each_pair do |key, value|
       if value.is_a?(Hash)
@@ -27,6 +28,7 @@ class Hash
     end
     self
   end
+  
   def replace_keys!(*keys_pairs)
     keys_pairs.flatten!
     keys_pairs.each do |keys_pair|

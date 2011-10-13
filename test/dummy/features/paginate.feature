@@ -20,100 +20,106 @@ Scenario: List users with no pagination
     When the client requests GET /user
     Then the response should be JSON:
 	"""
-	[
-	{"name": "J Smith", "email": "smith@smith.com", "id": 1},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 2},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 3},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 4},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 5},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 6},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 7},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 8},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 9},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 10},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 11},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 12},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 13},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 14},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 15},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 16},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 17},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 18},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 19},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 20}
-	]
+	{ "data" :
+		[
+			{"name": "J Smith", "email": "smith@smith.com", "id": 1},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 2},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 3},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 4},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 5},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 6},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 7},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 8},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 9},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 10},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 11},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 12},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 13},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 14},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 15},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 16},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 17},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 18},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 19},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 20}
+		], "limit" : null, "count" : 20 , "offset" : null
+	}
 	"""
 
 Scenario: List users with pagination
-    Given pagination is set for "User" model
-	And there are 10 items per page
-    When the client requests GET /user
+    When the client requests GET /user?limit=10
     Then the response should be JSON:
 	"""
-	[
-	{"name": "J Smith", "email": "smith@smith.com", "id": 1},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 2},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 3},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 4},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 5},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 6},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 7},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 8},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 9},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 10}
-	]
+	{ "data" :
+		[
+			{"name": "J Smith", "email": "smith@smith.com", "id": 1},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 2},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 3},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 4},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 5},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 6},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 7},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 8},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 9},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 10}
+		], "limit" : 10, "count" : 20 , "offset" : null
+	}
     """
-    When the client requests GET /user?page=2
+    When the client requests GET /user?limit=10&offset=10
     Then the response should be JSON:
 	"""
-	[
-	{"name": "J Smith", "email": "smith@smith.com", "id": 11},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 12},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 13},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 14},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 15},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 16},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 17},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 18},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 19},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 20}
-	]
+	{ "data" :
+		[
+			{"name": "J Smith", "email": "smith@smith.com", "id": 11},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 12},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 13},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 14},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 15},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 16},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 17},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 18},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 19},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 20}
+		], "limit" : 10, "count" : 20 , "offset" : 10
+	}
 	"""
 
 Scenario: List users using dynamic finder and pagination
-    Given pagination is set for "User" model
-	And there are 10 items per page
- 	When the client requests GET /users/find/by_name?term=J%20Smith
+ 	When the client requests GET /users?name=J%20Smith&limit=10
     Then the response should be JSON:
 	"""
-	[
-	{"name": "J Smith", "email": "smith@smith.com", "id": 1},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 2},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 3},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 4},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 5},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 6},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 7},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 8},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 9},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 10}
-	]
+	{ "data" :
+		[
+			{"name": "J Smith", "email": "smith@smith.com", "id": 1},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 2},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 3},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 4},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 5},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 6},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 7},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 8},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 9},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 10}
+		], "limit" : 10, "count" : 20 , "offset" : null
+	}
     """
 
- 	When the client requests GET /users/find/by_name?term=J%20Smith&page=2
+ 	When the client requests GET /users?name=J%20Smith&limit=10&offset=10
     Then the response should be JSON:
 	"""
-	[
-	{"name": "J Smith", "email": "smith@smith.com", "id": 11},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 12},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 13},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 14},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 15},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 16},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 17},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 18},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 19},
-	{"name": "J Smith", "email": "smith@smith.com", "id": 20}
-	]
+	{ "data" :
+		[
+			{"name": "J Smith", "email": "smith@smith.com", "id": 11},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 12},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 13},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 14},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 15},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 16},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 17},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 18},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 19},
+			{"name": "J Smith", "email": "smith@smith.com", "id": 20}
+		], "limit" : 10, "count" : 20 , "offset" : 10
+	}
 	"""
 

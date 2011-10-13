@@ -1,20 +1,22 @@
 = Amos - A Model Only Server.
 
 AMOS is a rails plugin that provides a simple server that uses the url to decide which model to deliver.  It is intended for 
-front-end applications that use something like javascriptMVC.
+front-end applications that use something like javascriptMVC[http://javascriptmvc.com].
 
 E.g. If the incoming request is /recipe it executes the index action which does a find(:all) on the Recipe model.
 
 == Supported actions
 
   :get => "/user" returns array of all users
-  :get => "/user?fields=name,email" returns only the name and email attributes
+  :get => "/user?fields[only]=name" returns only the name attribute
+  :get => "/user?name=J%20Smith" returns all records with a name of J Smith
+  :get => "/user?name=J%20Smith&email=smith@smith.com" returns all records with a name of J Smith and an email of smith@smith.com
   :get => "/users/1" returns record for user 1
-  :get => "/users/1?fields=name,email" returns only the name and email attributes for user 1
-  :get => "/users/1?associations=posts" returns the record for user plus any post
+  :get => "/users/1?fields[only]=name" returns only the name attribute for user 1
+  :get => "/users/1?fields[include]=posts" returns the record for user plus any posts
   :delete => "/users/1" deletes record 1 from users, returns success => true / false
   :put => "/users/1" + form data. Updates user record 1.  Returns success => true / false
-  :post => "/users" + form data.  Returns details of new record on success, or errors array on failure
+  :post => "/users" + form data.  Create a new record, returns details of new record on success, or errors array on failure
 
 *Amos gem is now available on rubygems.org*
 
@@ -75,23 +77,23 @@ Your models should now be available on /recipe etc.
 Take a look at spec/controllers/amos_controller_spec.rb and test/dummy/features/amos.feature for some examples of accessing 
 the data and what is returned.
 
-If you want to have the index and dynamic finder results paginated include this at the top of your model:
+If you want to us pagination add limit=n and offset=n to your query url
 
-  User < ActiveRecord::Base
-    paginate_results
-
-    .... your code ....
-
-  end
-
-This will use will_paginate to paginate the results.
+  :get => "/user?limit=10&offset=20" returns an array of the next 10 users starting at record 10
+  
 
 == Things to to
+
 * More tests against a javascriptMVC application
 
 == Change list
+
 === Edge
-In progress
+Merged Nico's changes to make returned data more jsmvc compliant and the accessing more active record friendly. Thanks Nico.
+
+Updated specs and cukes to test the above changes.
+
+Updated README to conform to above changes.
 
 === 0.0.4
 Added test and spec files to gemspec

@@ -33,10 +33,12 @@ Scenario: Allowing access to all data
     When the client requests GET /user
     Then the response should be JSON:
 	"""
-	[
-	{"name": "J Smith", "email": "smith@smith.com", "id": 1},
-	{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
-	]
+	{ "data" :
+		[
+			{"name": "J Smith", "email": "smith@smith.com", "id": 1},
+			{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
+			], "limit" : null, "count" : 2 , "offset" : null
+	}
 	"""
 
 Scenario: Denying access to all data

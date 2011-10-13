@@ -31,20 +31,24 @@ Scenario: List users
     When the client requests GET /user
     Then the response should be JSON:
 	"""
-	[
-	{"name": "J Smith", "email": "smith@smith.com", "id": 1},
-	{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
-	]
+	{"data" : [
+		{"name": "J Smith", "email": "smith@smith.com", "id": 1},
+		{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
+		],
+	 "count" : 2, "limit" : null, "offset": null
+	}
 	"""
-
+	
 Scenario: List users with field list
-    When the client requests GET /user?fields=email
+    When the client requests GET /user?fields[only]=email
     Then the response should be JSON:
 	"""
-	[
-	{"email": "smith@smith.com"},
-	{"email": "b@bloggs.com"}
-	]
+	{"data": 
+		[
+			{"email": "smith@smith.com"}, 
+			{"email": "b@bloggs.com"}
+		], "count":2, "limit":null, "offset":null
+	}
 	"""
 
 Scenario: List recipes using a dynamic finder
@@ -56,14 +60,17 @@ Scenario: List recipes using a dynamic finder
 	  | Shopping3 | Go to the shops      |
 	And "Shopping2" belongs to "J Smith"
 	And "Shopping3" belongs to "B Bloggs"
- 	When the client requests GET /recipes/find/by_description?term=Go%20to%20the%20shops
+ 	When the client requests GET /recipes/?description=Go%20to%20the%20shops
     Then the response should be JSON:
 	"""
-	[
-	  {"name" : "Shopping",  "description" : "Go to the shops", "id" : 1, "user_id" : 1},
-	  {"name" : "Shopping2", "description" : "Go to the shops", "id" : 4, "user_id" : 1},
-	  {"name" : "Shopping3", "description" : "Go to the shops", "id" : 7, "user_id" : 2}
-	]
+	{
+		"data" : [
+	  		{"name" : "Shopping",  "description" : "Go to the shops", "id" : 1, "userId" : 1},
+	  		{"name" : "Shopping2", "description" : "Go to the shops", "id" : 4, "userId" : 1},
+	  		{"name" : "Shopping3", "description" : "Go to the shops", "id" : 7, "userId" : 2}
+			], 
+			"count" : 3, "limit" : null, "offset" : null
+	}
 	"""
 	
 Scenario: List a single user
@@ -81,19 +88,19 @@ Scenario: Tries to access an invalid record
 	"""
 
 Scenario: List a single user with an association
-    When the client requests GET /users/1?association=recipes
+    When the client requests GET /users/1?fields[include]=recipes
     Then the response should be JSON:
 	"""
 	{"name": "J Smith", "id": 1, "email": "smith@smith.com",  
 	  "recipes": [
-	    {"name": "Shopping", "id": 1, "description": "Go to the shops"}, 
-	    {"name": "Clean", "id": 3, "description": "Hoover room"}
+	    {"name": "Shopping", "id": 1, "description": "Go to the shops", "userId": 1}, 
+	    {"name": "Clean", "id": 3, "description": "Hoover room", "userId": 1}
 	  ]
 	}
 	"""
 	
 Scenario: List a single user with field list
-    When the client requests GET /users/1?fields=email
+    When the client requests GET /users/1?fields[only]=email
     Then the response should be JSON:
 	"""
 	{"email": "smith@smith.com"}  
@@ -104,15 +111,17 @@ Scenario: Successfully update a single user
     When the client requests PUT /users/1 with name "A Smith" and email "only@smith.com"
     Then the response should be JSON:
 	"""
-	{"name": "A Smith", "email": "only@smith.com"}
+	{"name": "A Smith", "email": "only@smith.com", "id" : 1}
 	"""
     And the client requests GET /user
     Then the response should be JSON:
 	"""
-	[
-	{"name": "A Smith", "email": "only@smith.com", "id": 1},
-	{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
-	]
+	{ "data": 
+		[
+			{"name": "A Smith", "email": "only@smith.com", "id": 1},
+			{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
+		], "count" : 2, "limit" : null, "offset" : null
+	}
 	"""
 Scenario: Successfully create a new user
     When the client requests POST /users with name "E Bygumm" and email "eric@bygumm.com"
@@ -123,11 +132,13 @@ Scenario: Successfully create a new user
     And the client requests GET /user
     Then the response should be JSON:
 	"""
-	[
-	{"name": "J Smith", "email": "smith@smith.com", "id": 1},
-	{"name": "B Bloggs", "email": "b@bloggs.com",    "id": 2},
-	{"name": "E Bygumm", "email": "eric@bygumm.com", "id": 3}
-	]
+	{ "data": 
+		[
+			{"name": "J Smith", "email": "smith@smith.com", "id": 1},
+			{"name": "B Bloggs", "email": "b@bloggs.com",    "id": 2},
+			{"name": "E Bygumm", "email": "eric@bygumm.com", "id": 3}
+		], "count" : 3, "limit" : null, "offset" : null
+	}
 	"""
 
 Scenario: Successfully delete a single user
@@ -139,9 +150,11 @@ Scenario: Successfully delete a single user
     And the client requests GET /user
     Then the response should be JSON:
 	"""
-	[
-	{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
-	]
+	{ "data": 
+		[
+			{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
+		], "count" : 1, "limit" : null, "offset" : null
+	}
 	"""
 
 Scenario: Fails to delete a single user
@@ -153,8 +166,10 @@ Scenario: Fails to delete a single user
     And the client requests GET /user
     Then the response should be JSON:
 	"""
-	[
-	{"name": "J Smith", "email": "smith@smith.com", "id": 1},
-	{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
-	]
+	{ "data": 
+		[
+			{"name": "J Smith", "email": "smith@smith.com", "id": 1},
+			{"name": "B Bloggs", "email": "b@bloggs.com", "id": 2}
+		], "count" : 2, "limit" : null, "offset" : null
+	}
 	"""

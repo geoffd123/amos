@@ -3,8 +3,9 @@ class ActiveRecord::Base
   # set the default as_json instance method, called when options is blank or equal to 'default'
   def self.as_json(opts)
     define_method "as_json" do |*options|
+      
       if options.compact.blank? or options.to_s == 'default'
-        super(opts)
+        super(opts).merge( :except => [:created_at, :updated_at])
       else
         super(*options)
       end
@@ -16,11 +17,12 @@ class ActiveRecord::Base
   #   - camelize recursively all the keys of the output
   def as_json(options={})
     options ||= {}
-    options.symbolize_keys!
+    options = options.symbolize_keys
     includes = {}
 
     if options[:include]
       # control if a symbol or string is passed
+      options[:include] = [options[:include]] if options[:include].is_a?(String)
       options[:include] = [options[:include]] unless options[:include].is_a?(Enumerable)
 
       options[:include].reject! do |assoc, opts|

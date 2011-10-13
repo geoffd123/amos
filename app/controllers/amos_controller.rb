@@ -7,7 +7,6 @@
 
     before_filter :set_model
     before_filter :set_current_record, :only => [:show, :update, :destroy]
-    #before_filter :should_paginate
     
     def index
       options = remove_attributes_from ['offset', 'limit','count', 'fields', 'model', 'controller', 'action'], params.clone
@@ -60,9 +59,9 @@
       attributes = remove_attributes_from ['fields', 'id', 'model', 'controller', 'action'], params.clone
       attributes.underscore_keys!
       attributes = set_association_keys_for(@model, attributes)
-
+      
       if @record.update_attributes(attributes)
-        render :json => record.as_json(params[:fields])
+        render :json => @record.as_json(params[:fields])
       else
         render :json => @record.errors, :status => 400
       end
